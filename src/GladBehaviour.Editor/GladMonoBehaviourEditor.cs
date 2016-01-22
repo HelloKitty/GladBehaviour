@@ -8,7 +8,7 @@ using UnityEditor;
 namespace GladBehaviour.Editor
 {
 	[CustomEditor(typeof(GladMonoBehaviour))]
-    public class GladMonoBehaviourEditor : UnityEditor.Editor
+	public class GladMonoBehaviourEditor : UnityEditor.Editor
 	{
 		public override void OnInspectorGUI()
 		{
