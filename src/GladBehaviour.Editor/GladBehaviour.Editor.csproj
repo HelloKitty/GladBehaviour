@@ -48,6 +48,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\GladMonoBehaviourDataController.cs" />
+    <Compile Include="Controllers\IBehaviourDataController.cs" />
     <Compile Include="Events\Args\GladBehaviourValueChangedArgs.cs" />
     <Compile Include="Events\OnValueChanged.cs" />
     <Compile Include="GladMonoBehaviourEditor.cs" />

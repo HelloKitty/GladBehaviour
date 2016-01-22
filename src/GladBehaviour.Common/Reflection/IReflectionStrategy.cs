@@ -33,12 +33,12 @@ namespace GladBehaviour.Common
 			where TAttributeType : Attribute;
 
 		//getters and setters for reflection
-		object GetValue(FieldInfo info);
+		object GetValue(object instance, FieldInfo info);
 
-		object GetValue(PropertyInfo info);
+		object GetValue(object instance, PropertyInfo info);
 
-		void SetValue(FieldInfo info, object value);
+		void SetValue(object instance, FieldInfo info, object value);
 
-		object SetValue(PropertyInfo info, object value);
+		object SetValue(object instance, PropertyInfo info, object value);
 	}
 }

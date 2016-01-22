@@ -8,13 +8,13 @@ using UnityEngine;
 
 namespace GladBehaviour.Editor
 {
-	public abstract class BehaviourCollectionModelRepository : IBehaviourRepository
+	public class BehaviourCollectionModelRepository : IBehaviourRepository
 	{
 		private readonly MonoBehaviour dataBehaviour;
 
 		private readonly IReflectionStrategy reflectionStrat;
 
-		private IEnumerable<IDataStoreModel> cachedModels;
+		private IEnumerable<CollectionDataStoreModel> cachedModels;
 
 		private readonly object syncObj = new object();
 
@@ -30,14 +30,14 @@ namespace GladBehaviour.Editor
 			reflectionStrat = strat;
         }
 
-		public IEnumerable<IDataStoreModel> BuildModels()
+		IEnumerable<CollectionDataStoreModel> BuildModels()
 		{
 			FieldInfo info = reflectionStrat.Field<ListCollectionSerializationAttribute>(typeof(GladMonoBehaviour), BindingFlags.NonPublic | BindingFlags.Instance);
 
 			if (info == null)
 				throw new InvalidOperationException("Unable to find the collection data. Should be marked with " + nameof(ListCollectionSerializationAttribute));
 
-			object objValue = reflectionStrat.GetValue(info);
+			object objValue = reflectionStrat.GetValue(dataBehaviour, info);
 
 			if (objValue == null)
 				throw new InvalidOperationException("Unable to get the value of the collection data. FieldInfo was found but value was not found.");
@@ -48,14 +48,19 @@ namespace GladBehaviour.Editor
 				throw new InvalidOperationException("Unexpected Type of " + nameof(objValue) + " expected Type " + nameof(List<CollectionComponentDataStore>));
 
 			//Double check locking is required. Idk what thread editor runs on
-			if(cachedModels == null)
+			if (cachedModels == null)
 			{
 				lock (syncObj)
 					if (cachedModels == null)
-						cachedModels = dataStoreCollection.Select(x => new CollectionDataStoreModel(x)).Cast<IDataStoreModel>();
+						cachedModels = dataStoreCollection.Select(x => new CollectionDataStoreModel(x));
 			}
 
-			return cachedModels;
+			return dataStoreCollection.Select(x => new CollectionDataStoreModel(x));
         }
+
+		IEnumerable<IDataStoreModel> IBehaviourRepository.BuildModels()
+		{
+			return this.BuildModels().Cast<IDataStoreModel>();
+		}
 	}
 }

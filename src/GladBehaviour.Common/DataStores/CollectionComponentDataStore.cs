@@ -8,25 +8,25 @@ using UnityEngine;
 namespace GladBehaviour.Common
 {
 	[Serializable]
-	public class CollectionComponentDataStore : IEnumerable<SingleComponentDataStore>, IDataUpdatable<List<UnityEngine.Component>>
+	public class CollectionComponentDataStore : IEnumerable<UnityEngine.Object>, IDataUpdatable<List<UnityEngine.Object>>
 	{
 		//Idk if the Unity editor will ever go threaded for serialization
 		private readonly object syncObj = new object();
 
 		[SerializeField]
-		public List<SingleComponentDataStore> dataStoreCollection;
+		public List<UnityEngine.Object> dataStoreCollection;
 
 		public CollectionComponentDataStore()
 		{
-			dataStoreCollection = new List<SingleComponentDataStore>();
+			dataStoreCollection = new List<UnityEngine.Object>();
 		}
 
 		public CollectionComponentDataStore(int initialSize)
 		{
-			dataStoreCollection = new List<SingleComponentDataStore>(initialSize);
+			dataStoreCollection = new List<UnityEngine.Object>(initialSize);
 		}
 
-		public CollectionComponentDataStore(IEnumerable<SingleComponentDataStore> data)
+		public CollectionComponentDataStore(IEnumerable<UnityEngine.Object> data)
 		{
 			if (data == null)
 				throw new ArgumentNullException(nameof(data), "Cannot init with a null collection.");
@@ -34,15 +34,15 @@ namespace GladBehaviour.Common
 			dataStoreCollection = data.ToList();
 		}
 
-		public IEnumerator<SingleComponentDataStore> GetEnumerator()
+		public IEnumerator<UnityEngine.Object> GetEnumerator()
 		{
 			return dataStoreCollection?.GetEnumerator();
 		}
 
-		public void Update(List<UnityEngine.Component> newValue)
+		public void Update(List<UnityEngine.Object> newValue)
 		{
 			lock(syncObj)
-				dataStoreCollection = newValue.Select(x => new SingleComponentDataStore(x)).ToList();
+				dataStoreCollection = newValue;
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

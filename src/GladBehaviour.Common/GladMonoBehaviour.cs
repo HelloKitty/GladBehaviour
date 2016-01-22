@@ -8,22 +8,32 @@ namespace GladBehaviour.Common
 {
 	public class GladMonoBehaviour : MonoBehaviour, ISerializationCallbackReceiver
 	{
+		[HideInInspector]
 		[SerializeField]
 		[SingleCollectionSerialization]
 		private List<SingleComponentDataStore> singleDataStoreCollection;
 
+		[HideInInspector]
 		[SerializeField]
-		[SingleCollectionSerialization]
+		[ListCollectionSerialization]
 		private List<CollectionComponentDataStore> collectionDataStoreCollection;
 
 		public void OnAfterDeserialize()
 		{
-			//throw new NotImplementedException();
+			singleDataStoreCollection = new List<SingleComponentDataStore>();
+			singleDataStoreCollection.Add(new SingleComponentDataStore(this));
+
+			collectionDataStoreCollection = new List<CollectionComponentDataStore>();
+			collectionDataStoreCollection.Add(new CollectionComponentDataStore(new List<UnityEngine.Object>() { this }));
 		}
 
 		public void OnBeforeSerialize()
 		{
-			//throw new NotImplementedException();
+			singleDataStoreCollection = new List<SingleComponentDataStore>();
+			singleDataStoreCollection.Add(new SingleComponentDataStore(this));
+
+			collectionDataStoreCollection = new List<CollectionComponentDataStore>();
+			collectionDataStoreCollection.Add(new CollectionComponentDataStore(new List<UnityEngine.Object>() { this }));
 		}
 	}
 }

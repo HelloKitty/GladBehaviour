@@ -7,17 +7,17 @@ using UnityEngine;
 namespace GladBehaviour.Common
 {
 	[Serializable]
-	public class SingleComponentDataStore : IDataUpdatable<UnityEngine.Component>
+	public class SingleComponentDataStore : IDataUpdatable<UnityEngine.Object>
 	{
 		[SerializeField]
-		public UnityEngine.Component StoredComponent { get; private set; }
+		public UnityEngine.Object StoredComponent { get; private set; }
 
-		public SingleComponentDataStore(UnityEngine.Component com)
+		public SingleComponentDataStore(UnityEngine.Object com)
 		{
 			StoredComponent = com;
 		}
 
-		public void Update(Component newValue)
+		public void Update(UnityEngine.Object newValue)
 		{
 			StoredComponent = newValue;
 		}
