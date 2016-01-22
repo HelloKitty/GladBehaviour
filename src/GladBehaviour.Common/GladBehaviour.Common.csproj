@@ -41,8 +41,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ListCollectionSerializationAttribute.cs" />
+    <Compile Include="Attributes\SingleCollectionSerializationAttribute.cs" />
+    <Compile Include="DataStores\CollectionComponentDataStore.cs" />
+    <Compile Include="DataStores\IUpdatable.cs" />
+    <Compile Include="DataStores\SingleComponentDataStore.cs" />
     <Compile Include="GladMonoBehaviour.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\IReflectionStrategy.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

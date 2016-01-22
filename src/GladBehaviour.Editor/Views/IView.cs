@@ -7,6 +7,6 @@ namespace GladBehaviour.Editor
 {
 	public interface IView
 	{
-		int RegisteredID { get; }
+
 	}
 }

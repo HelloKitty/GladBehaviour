@@ -11,16 +11,13 @@ namespace GladBehaviour.Editor
 {
 	public class CollectionView : IEditorDrawable, IView
 	{
-		public int RegisteredID { get; private set; }
-
 		public event OnValueChanged OnEditorValueChanged;
 
 		private readonly IList listData;
 
-		public CollectionView(/*yep Unity uses IList*/IList currentCollection, int id)
+		public CollectionView(/*yep Unity uses IList*/IList currentCollection)
 		{
 			listData = currentCollection;
-			RegisteredID = id;
 		}
 
 		public void Draw()
@@ -33,7 +30,7 @@ namespace GladBehaviour.Editor
 			if(EditorGUI.EndChangeCheck()) //check if the editor changed since drawing the list
 			{
 				if (OnEditorValueChanged != null)
-					OnEditorValueChanged(this, new GladBehaviourValueChangedArgs(list.list, RegisteredID));
+					OnEditorValueChanged(this, new GladBehaviourValueChangedArgs(list.list));
 			}
 		}
 	}

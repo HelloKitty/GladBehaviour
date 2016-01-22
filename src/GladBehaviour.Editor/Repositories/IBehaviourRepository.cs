@@ -7,6 +7,6 @@ namespace GladBehaviour.Editor
 {
 	public interface IBehaviourRepository
 	{
-		IEnumerable<IBehaviourModel> BuildModels();
+		IEnumerable<IDataStoreModel> BuildModels();
 	}
 }
