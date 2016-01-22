@@ -10,16 +10,10 @@ namespace GladBehaviour.Editor
 	{
 		public readonly object ChangedValue;
 
-		//public readonly string MemberName;
-
-		//public readonly MemberTypes MemberType;
-
-		public GladBehaviourValueChangedArgs(object newValue, int registeredID)//, string name, MemberTypes type)
+		public GladBehaviourValueChangedArgs(object newValue)
 			: base()
 		{
 			ChangedValue = newValue;
-			//MemberName = name;
-			//MemberType = type;
 		}
 	}
 }
