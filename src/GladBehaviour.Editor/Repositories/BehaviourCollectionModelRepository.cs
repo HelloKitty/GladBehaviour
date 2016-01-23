@@ -11,13 +11,13 @@ namespace GladBehaviour.Editor
 {
 	public class BehaviourCollectionModelRepository : IBehaviourRepository
 	{
-		private readonly MonoBehaviour dataBehaviour;
+		private readonly GladMonoBehaviour dataBehaviour;
 
 		private readonly IReflectionStrategy reflectionStrat;
 
 		private readonly object syncObj = new object();
 
-		public BehaviourCollectionModelRepository(MonoBehaviour behaviour, IReflectionStrategy strat)
+		public BehaviourCollectionModelRepository(GladMonoBehaviour behaviour, IReflectionStrategy strat)
 		{
 			if (behaviour == null)
 				throw new ArgumentNullException(nameof(behaviour), "Cannot deal with null " + nameof(MonoBehaviour) + ".");
