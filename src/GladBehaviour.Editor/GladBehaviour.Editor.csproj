@@ -50,17 +50,20 @@
   <ItemGroup>
     <Compile Include="Controllers\GladMonoBehaviourDataController.cs" />
     <Compile Include="Controllers\IBehaviourDataController.cs" />
+    <Compile Include="EditorHacks.cs" />
     <Compile Include="Events\Args\GladBehaviourValueChangedArgs.cs" />
     <Compile Include="Events\OnValueChanged.cs" />
     <Compile Include="GladMonoBehaviourEditor.cs" />
     <Compile Include="Models\CollectionDataStoreModel.cs" />
     <Compile Include="Models\IDataStoreModel.cs" />
+    <Compile Include="Models\ISerializedObjectReferenceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BehaviourCollectionModelRepository.cs" />
     <Compile Include="Repositories\IBehaviourRepository.cs" />
     <Compile Include="Views\CollectionView.cs" />
     <Compile Include="Views\IEditorDrawable.cs" />
     <Compile Include="Views\IView.cs" />
+    <Compile Include="Views\SingleView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GladBehaviour.Common\GladBehaviour.Common.csproj">

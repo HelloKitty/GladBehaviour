@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace GladBehaviour.Editor
 {
-	[CustomEditor(typeof(GladMonoBehaviour))]
+	[CustomEditor(typeof(GladMonoBehaviour), true)]
 	public class GladMonoBehaviourEditor : UnityEditor.Editor
 	{
 		//We mostly don't make these ephemeral because it would lag the editor
@@ -20,13 +20,14 @@ namespace GladBehaviour.Editor
 
 		IEnumerable<IEditorDrawable> views;
 
-		//Can't do this in constructor for some reason
-		private bool isInit = false;
-
 		public override void OnInspectorGUI()
 		{
-			if (!isInit)
-				Init();
+			//You shouldn't change components before repaint
+			if(Event.current.type == EventType.Layout)
+			{
+				if (views == null)
+					Init();
+			}
 
 			foreach (IEditorDrawable v in views)
 				v.Draw();
@@ -41,7 +42,6 @@ namespace GladBehaviour.Editor
 			if (target == null)
 				throw new ArgumentException(nameof(target), "Target is null for some reason.");
 
-			views = new List<IEditorDrawable>();
 			reflectionStrat = new FasterflectReflectionStrategy();
 			collectionRepo = new BehaviourCollectionModelRepository(target as GladMonoBehaviour, reflectionStrat);
 			controller = new GladMonoBehaviourDataController();

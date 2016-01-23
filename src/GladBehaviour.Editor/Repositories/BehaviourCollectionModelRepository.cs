@@ -1,5 +1,6 @@
 ﻿using GladBehaviour.Common;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,8 +14,6 @@ namespace GladBehaviour.Editor
 		private readonly MonoBehaviour dataBehaviour;
 
 		private readonly IReflectionStrategy reflectionStrat;
-
-		private IEnumerable<CollectionDataStoreModel> cachedModels;
 
 		private readonly object syncObj = new object();
 
@@ -30,7 +29,27 @@ namespace GladBehaviour.Editor
 			reflectionStrat = strat;
         }
 
-		IEnumerable<CollectionDataStoreModel> BuildModels()
+		IEnumerable<IDataStoreModel> BuildSingleModels()
+		{
+			FieldInfo info = reflectionStrat.Field<SingleCollectionSerializationAttribute>(typeof(GladMonoBehaviour), BindingFlags.NonPublic | BindingFlags.Instance);
+
+			if (info == null)
+				throw new InvalidOperationException("Unable to find the collection data. Should be marked with " + nameof(SingleCollectionSerializationAttribute));
+
+			object objValue = reflectionStrat.GetValue(dataBehaviour, info);
+
+			if (objValue == null)
+				throw new InvalidOperationException("Unable to get the value of the collection data. FieldInfo was found but value was not found.");
+
+			List<SingleComponentDataStore> dataStoreCollection = objValue as List<SingleComponentDataStore>;
+
+			if (dataStoreCollection == null)
+				throw new InvalidOperationException("Unexpected Type of " + nameof(objValue) + " expected Type " + nameof(List<SingleComponentDataStore>));
+
+			return dataStoreCollection.Select(x => new DataStoreModel<SingleComponentDataStore>(x)).Cast<IDataStoreModel>();
+		}
+
+		IEnumerable<IDataStoreModel> BuildCollectionModels()
 		{
 			FieldInfo info = reflectionStrat.Field<ListCollectionSerializationAttribute>(typeof(GladMonoBehaviour), BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -47,20 +66,14 @@ namespace GladBehaviour.Editor
 			if (dataStoreCollection == null)
 				throw new InvalidOperationException("Unexpected Type of " + nameof(objValue) + " expected Type " + nameof(List<CollectionComponentDataStore>));
 
-			//Double check locking is required. Idk what thread editor runs on
-			if (cachedModels == null)
-			{
-				lock (syncObj)
-					if (cachedModels == null)
-						cachedModels = dataStoreCollection.Select(x => new CollectionDataStoreModel(x));
-			}
-
-			return dataStoreCollection.Select(x => new CollectionDataStoreModel(x));
+			return dataStoreCollection.Select(x => new DataStoreModel<CollectionComponentDataStore>(x)).Cast<IDataStoreModel>();
         }
+
+		//private IEnumerable<SingleComponentDataStoreModel>
 
 		IEnumerable<IDataStoreModel> IBehaviourRepository.BuildModels()
 		{
-			return this.BuildModels().Cast<IDataStoreModel>();
+			return Enumerable.Concat(BuildCollectionModels(), BuildSingleModels());
 		}
 	}
 }

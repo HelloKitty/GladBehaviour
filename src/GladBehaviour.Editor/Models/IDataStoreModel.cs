@@ -6,9 +6,11 @@ using System.Text;
 
 namespace GladBehaviour.Editor
 {
-	public interface IDataStoreModel
+	public interface IDataStoreModel : ISerializedObjectReferenceProvider
 	{
-		object SerializedObject { get; }
+		Type DataType { get; }
+
+		string SerializedName { get; }
 
 		void Update(object newValue);
 	}

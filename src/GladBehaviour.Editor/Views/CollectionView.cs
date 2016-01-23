@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -17,17 +18,17 @@ namespace GladBehaviour.Editor
 
 		private readonly string headerDisplayName;
 
-		public CollectionView(/*yep Unity uses IList*/IList<UnityEngine.Object> currentCollection, string propName)
+		private readonly Type serializedObjectType;
+
+		private readonly ReorderableList list;
+
+		public CollectionView(/*yep Unity uses IList*/IList<UnityEngine.Object> currentCollection, string propName, Type objectType)
 		{
 			listData = currentCollection;
 			headerDisplayName = propName;
-        }
+			serializedObjectType = objectType;
 
-		public void Draw()
-		{
-			EditorGUI.BeginChangeCheck();
-
-			ReorderableList list = new ReorderableList((IList)listData, typeof(UnityEngine.Object)); //should be a list of MonoBehaviour
+			list = new ReorderableList((IList)listData, typeof(UnityEngine.Object), true, true, true, true); //should be a list of MonoBehaviour
 
 			//This is copy pasted from ExtendedEvent
 			//Required to setup the list
@@ -37,6 +38,11 @@ namespace GladBehaviour.Editor
 			list.drawElementCallback = DrawElementInternal;
 			list.onAddCallback = AddInternal;
 			list.onRemoveCallback = RemoveInternal;
+		}
+
+		public void Draw()
+		{
+			EditorGUI.BeginChangeCheck();
 
 			list.DoLayoutList();
 
@@ -49,7 +55,7 @@ namespace GladBehaviour.Editor
 
 		private void DrawHeaderInternal(Rect rect)
 		{
-			EditorGUI.LabelField(rect, headerDisplayName);
+			EditorGUI.LabelField(rect, GetLabelName(headerDisplayName));
 
 			/*if (serializedProperty.isInstantiatedPrefab)
 			{
@@ -69,17 +75,23 @@ namespace GladBehaviour.Editor
 			var halfHeight = rect.height / 2;
 
 			//swap GO Field Rect for the dropdown in ExtendedEvent source
-			var gameObjectRect = new Rect(rect.x + thirdWidth, rect.y, thirdWidth * 2, halfHeight);  
-			var dropdownRect = new Rect(rect.x, rect.y, thirdWidth, halfHeight);
+			//var gameObjectRect = new Rect(rect.x + thirdWidth, rect.y, thirdWidth * 2, halfHeight);
+			//var gameObjectRect = new Rect(rect.x + thirdWidth, rect.y, rect.width * 4, halfHeight);
+			//var dropdownRect = new Rect(rect.x, rect.y, thirdWidth, halfHeight);
+			var gameObjectRect = new Rect(rect.x, rect.y, rect.width, halfHeight);
 
 			/*var gameObjectRect = new Rect(rect.x, rect.y, thirdWidth, halfHeight);
 			var dropdownRect = new Rect(rect.x + thirdWidth, rect.y, thirdWidth * 2, halfHeight);
 			var bottomRect = new Rect(rect.x, rect.y + halfHeight, rect.width, halfHeight);*/
 
 			EditorGUI.BeginChangeCheck();
-			GUI.Box(gameObjectRect, "");
+			//GUI.Box(dropdownRect, "");
 
-			listData[index] = (UnityEngine.Object)EditorGUI.ObjectField(gameObjectRect, listData[index], typeof(UnityEngine.Object), true);
+			StringBuilder builder = new StringBuilder();
+
+			builder.AppendFormat("{0}. {1}->{2}", index, listData[index]?.name, listData[index]?.GetType()?.Name);
+
+			listData[index] = (UnityEngine.Object)EditorGUI.ObjectField(gameObjectRect, new GUIContent(builder.ToString()), listData[index], serializedObjectType, true);
 
 			if (EditorGUI.EndChangeCheck())
 			{
@@ -90,12 +102,22 @@ namespace GladBehaviour.Editor
 
 		private void AddInternal(ReorderableList list)
 		{
+			listData.Add(null); //this is trequired to start off the list
 			//eEvent.Listeners.Add(new ExtendedEvent.GameObjectContainer());
 		}
 
 		private void RemoveInternal(ReorderableList list)
 		{
 			listData.RemoveAt(list.index);
+		}
+
+		private string GetLabelName(string s)
+		{
+			//http://stackoverflow.com/questions/5796383/insert-spaces-between-words-on-a-camel-cased-token
+			if (s == null)
+				return "";
+			else
+				return Regex.Replace(s, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
 		}
 	}
 }

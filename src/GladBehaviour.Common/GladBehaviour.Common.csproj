@@ -48,6 +48,7 @@
     <Compile Include="Attributes\ListCollectionSerializationAttribute.cs" />
     <Compile Include="Attributes\SingleCollectionSerializationAttribute.cs" />
     <Compile Include="DataStores\CollectionComponentDataStore.cs" />
+    <Compile Include="DataStores\ISerializableContainer.cs" />
     <Compile Include="DataStores\IUpdatable.cs" />
     <Compile Include="DataStores\SingleComponentDataStore.cs" />
     <Compile Include="GladMonoBehaviour.cs" />

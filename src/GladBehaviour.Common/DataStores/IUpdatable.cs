@@ -5,8 +5,13 @@ using System.Text;
 
 namespace GladBehaviour.Common
 {
-	public interface IDataUpdatable<TType>
+	public interface IDataUpdatable<TType> : IDataUpdatable
 	{
 		void Update(TType newValue);
+	}
+
+	public interface IDataUpdatable
+	{
+		void Update(object newValue);
 	}
 }

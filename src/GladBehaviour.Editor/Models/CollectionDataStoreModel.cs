@@ -7,27 +7,30 @@ using System.Text;
 
 namespace GladBehaviour.Editor
 {
-	public class CollectionDataStoreModel : IDataStoreModel
+	public class DataStoreModel<TSerializableContainerType> : IDataStoreModel
+		where TSerializableContainerType : ISerializableContainer, IDataUpdatable
 	{
-		private CollectionComponentDataStore serializedObject;
+		private TSerializableContainerType serializedObject;
 
-		public CollectionDataStoreModel(CollectionComponentDataStore datas)
-		{
-			serializedObject = datas;
-        }
-
-		object IDataStoreModel.SerializedObject
+		object ISerializedObjectReferenceProvider.SerializedObject
 		{
 			get { return serializedObject; }
 		}
 
-		public CollectionComponentDataStore SerializedObject { get { return serializedObject; } }
+		public TSerializableContainerType SerializedObject { get { return serializedObject; } }
+
+		public Type DataType { get { return serializedObject.SerializedType; } }
+
+		public string SerializedName { get { return serializedObject.SerializedName; } }
+
+		public DataStoreModel(TSerializableContainerType datas)
+		{
+			serializedObject = datas;
+        }
 
 		public void Update(object newValue)
 		{
-			//Idk what if Unity uses List<UnityEngine.Component> under the IList or what
-			//So we need to LINQ cast
-			serializedObject.Update(((IList)newValue).Cast<UnityEngine.Object>().ToList());
+			serializedObject.Update(newValue);
 		}
 	}
 }
