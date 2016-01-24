@@ -41,6 +41,11 @@ namespace GladBehaviour.Editor
 
 		}
 
+		/// <summary>
+		/// Produces a spaced out string for names on the editor.
+		/// </summary>
+		/// <param name="s">String to modify.</param>
+		/// <returns>Spaced out capitalized string.</returns>
 		private string GetLabelName(string s)
 		{
 			//http://stackoverflow.com/questions/5796383/insert-spaces-between-words-on-a-camel-cased-token

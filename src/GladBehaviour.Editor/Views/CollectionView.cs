@@ -10,16 +10,35 @@ using UnityEngine;
 
 namespace GladBehaviour.Editor
 {
+	/// <summary>
+	/// View for collection type data models.
+	/// </summary>
 	public class CollectionView : IEditorDrawable, IView
 	{
+		/// <summary>
+		/// Event to subscribe to to be notified when 
+		/// the value of a collection has changed.
+		/// </summary>
 		public event OnValueChanged OnEditorValueChanged;
 
+		/// <summary>
+		/// Collection for the view to display.
+		/// </summary>
 		private readonly IList<UnityEngine.Object> listData;
 
+		/// <summary>
+		/// Display name for the collection.
+		/// </summary>
 		private readonly string headerDisplayName;
 
+		/// <summary>
+		/// Type of the inner object collection.
+		/// </summary>
 		private readonly Type serializedObjectType;
 
+		/// <summary>
+		/// View/GUI collection that Unity renders.
+		/// </summary>
 		private readonly ReorderableList list;
 
 		public CollectionView(/*yep Unity uses IList*/IList<UnityEngine.Object> currentCollection, string propName, Type objectType)
@@ -40,6 +59,9 @@ namespace GladBehaviour.Editor
 			list.onRemoveCallback = RemoveInternal;
 		}
 
+		/// <summary>
+		/// Draws the View.
+		/// </summary>
 		public void Draw()
 		{
 			EditorGUI.BeginChangeCheck();
@@ -53,19 +75,22 @@ namespace GladBehaviour.Editor
 			}
 		}
 
+		/// <summary>
+		/// <see cref="ReorderableList"/> delegate function for drawing header.
+		/// </summary>
+		/// <param name="rect">Rect of the header.</param>
 		private void DrawHeaderInternal(Rect rect)
 		{
 			EditorGUI.LabelField(rect, GetLabelName(headerDisplayName));
-
-			/*if (serializedProperty.isInstantiatedPrefab)
-			{
-				if (GUI.Button(new Rect(rect.x + rect.width * 0.85f, rect.y, rect.width * 0.15f, rect.height), "Apply"))
-				{
-					EditorUtility.SetDirty(serializedProperty.serializedObject.targetObject);
-				}
-			}*/
 		}
 
+		/// <summary>
+		/// <see cref="ReorderableList"/> delegate function for drawing the contained elements.
+		/// </summary>
+		/// <param name="rect">Rect for the element.</param>
+		/// <param name="index">Index of the element</param>
+		/// <param name="isActive">Indicates if the list is active.</param>
+		/// <param name="isFocused">Indicates if the list is focused.</param>
 		private void DrawElementInternal(Rect rect, int index, bool isActive, bool isFocused)
 		{
 			rect.yMin += 3f;
@@ -100,17 +125,27 @@ namespace GladBehaviour.Editor
 			}
 		}
 
+		//I actually don't know. This is in the ExtendedEvents source code
 		private void AddInternal(ReorderableList list)
 		{
 			listData.Add(null); //this is trequired to start off the list
 			//eEvent.Listeners.Add(new ExtendedEvent.GameObjectContainer());
 		}
 
+		/// <summary>
+		/// <see cref="ReorderableList"/> delegate function for removing elements.
+		/// </summary>
+		/// <param name="list"><see cref="ReorderableList"/> instance.</param>
 		private void RemoveInternal(ReorderableList list)
 		{
 			listData.RemoveAt(list.index);
 		}
 
+		/// <summary>
+		/// Produces a spaced out string for names on the editor.
+		/// </summary>
+		/// <param name="s">String to modify.</param>
+		/// <returns>Spaced out capitalized string.</returns>
 		private string GetLabelName(string s)
 		{
 			//http://stackoverflow.com/questions/5796383/insert-spaces-between-words-on-a-camel-cased-token
