@@ -9,14 +9,33 @@ using UnityEngine;
 
 namespace GladBehaviour.Editor
 {
+	/// <summary>
+	/// Repository that provides access to <see cref="IDataStoreModel"/>s.
+	/// </summary>
 	public class BehaviourCollectionModelRepository : IBehaviourRepository
 	{
+		/// <summary>
+		/// <see cref="GladMonoBehaviour"/> instance that <see cref="IDataStoreModel"/> instances should be
+		/// generates from.
+		/// </summary>
 		private readonly GladMonoBehaviour dataBehaviour;
 
+		/// <summary>
+		/// Strategy for reflection.
+		/// </summary>
 		private readonly IReflectionStrategy reflectionStrat;
 
+		/// <summary>
+		/// Threading lock/sync object.
+		/// </summary>
 		private readonly object syncObj = new object();
 
+		/// <summary>
+		/// Creates a <see cref="IBehaviourRepository"/> based on the given <see cref="GladMonoBehaviour"/>
+		/// instance provided and uses <see cref="IReflectionStrategy"/> for parsing the Type info.
+		/// </summary>
+		/// <param name="behaviour">Instance to parse.</param>
+		/// <param name="strat">Strategy for parsing.</param>
 		public BehaviourCollectionModelRepository(GladMonoBehaviour behaviour, IReflectionStrategy strat)
 		{
 			if (behaviour == null)
@@ -68,8 +87,6 @@ namespace GladBehaviour.Editor
 
 			return dataStoreCollection.Select(x => new DataStoreModel<CollectionComponentDataStore>(x)).Cast<IDataStoreModel>();
         }
-
-		//private IEnumerable<SingleComponentDataStoreModel>
 
 		IEnumerable<IDataStoreModel> IBehaviourRepository.BuildModels()
 		{
