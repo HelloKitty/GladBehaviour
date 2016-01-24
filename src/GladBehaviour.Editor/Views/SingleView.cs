@@ -8,16 +8,38 @@ using UnityEngine;
 
 namespace GladBehaviour.Editor
 {
+	/// <summary>
+	/// View for single component type data models.
+	/// </summary>
 	public class SingleView : IEditorDrawable, IView
 	{
+		/// <summary>
+		/// Event to subscribe to to be notified when 
+		/// the value of the component has changed.
+		/// </summary>
 		public event OnValueChanged OnEditorValueChanged;
 
+		/// <summary>
+		/// Component provider. Provides the object to be displayed.
+		/// </summary>
 		private Func<UnityEngine.Object> objectValueProvider;
 
+		/// <summary>
+		/// Type of the component serialized.
+		/// </summary>
 		private readonly Type serializedObjectType;
 
+		/// <summary>
+		/// Name of the serialized component.
+		/// </summary>
 		private readonly string memberName;
 
+		/// <summary>
+		/// Creates a view for a single component.
+		/// </summary>
+		/// <param name="refProvider">Provider for the component.</param>
+		/// <param name="dataType">Type of the component.</param>
+		/// <param name="propName">Name of the member.</param>
 		public SingleView(Func<UnityEngine.Object> refProvider, Type dataType, string propName)
 		{
 			objectValueProvider = refProvider;
@@ -25,6 +47,9 @@ namespace GladBehaviour.Editor
 			memberName = propName;
         }
 
+		/// <summary>
+		/// Draws the View.
+		/// </summary>
 		public void Draw()
 		{
 			StringBuilder builder = new StringBuilder();

@@ -29,6 +29,7 @@ namespace GladBehaviour.Editor
 					Init();
 			}
 
+			//draws all views AKA the lists/fields
 			foreach (IEditorDrawable v in views)
 				v.Draw();
 
