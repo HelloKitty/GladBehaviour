@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0E51FFEF-460
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{13F75F67-D693-4535-9287-AB3D60CCB49C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GladBehaviour.Tests", "tests\GladBehaviour.Tests\GladBehaviour.Tests.csproj", "{E5CEC435-D157-4218-8AAF-3FAEEE3B94CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{EDD84B71-F5BD-44DA-8E35-3F079B5610CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDD84B71-F5BD-44DA-8E35-3F079B5610CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDD84B71-F5BD-44DA-8E35-3F079B5610CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5CEC435-D157-4218-8AAF-3FAEEE3B94CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5CEC435-D157-4218-8AAF-3FAEEE3B94CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5CEC435-D157-4218-8AAF-3FAEEE3B94CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5CEC435-D157-4218-8AAF-3FAEEE3B94CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,5 +38,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1D84B2F9-C765-48D5-A337-B9DBD08A3A00} = {0E51FFEF-460A-4249-91DE-097FF233F8FA}
 		{EDD84B71-F5BD-44DA-8E35-3F079B5610CE} = {0E51FFEF-460A-4249-91DE-097FF233F8FA}
+		{E5CEC435-D157-4218-8AAF-3FAEEE3B94CD} = {13F75F67-D693-4535-9287-AB3D60CCB49C}
 	EndGlobalSection
 EndGlobal
