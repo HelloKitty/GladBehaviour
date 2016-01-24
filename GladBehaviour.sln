@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GladBehaviour.Common", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GladBehaviour.Editor", "src\GladBehaviour.Editor\GladBehaviour.Editor.csproj", "{EDD84B71-F5BD-44DA-8E35-3F079B5610CE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0E51FFEF-460A-4249-91DE-097FF233F8FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{13F75F67-D693-4535-9287-AB3D60CCB49C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1D84B2F9-C765-48D5-A337-B9DBD08A3A00} = {0E51FFEF-460A-4249-91DE-097FF233F8FA}
+		{EDD84B71-F5BD-44DA-8E35-3F079B5610CE} = {0E51FFEF-460A-4249-91DE-097FF233F8FA}
 	EndGlobalSection
 EndGlobal
