@@ -11,6 +11,10 @@ namespace GladBehaviour.Common
 	/// <typeparam name="TType">Data type</typeparam>
 	public interface IDataUpdatable<TType> : IDataUpdatable
 	{
+		/// <summary>
+		/// Updates a value.
+		/// </summary>
+		/// <param name="newValue">Value to update to.</param>
 		void Update(TType newValue);
 	}
 
@@ -19,6 +23,10 @@ namespace GladBehaviour.Common
 	/// </summary>
 	public interface IDataUpdatable
 	{
+		/// <summary>
+		/// Updates a value.
+		/// </summary>
+		/// <param name="newValue">Value to update to.</param>
 		void Update(object newValue);
 	}
 }
