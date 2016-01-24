@@ -7,8 +7,18 @@ using UnityEngine;
 
 namespace GladBehaviour.Editor
 {
+	/// <summary>
+	/// Controller that manages models and views for behaviours.
+	/// Manages registeration of models and creation and setup of views.
+	/// </summary>
 	public class GladMonoBehaviourDataController : IBehaviourDataController
 	{
+		/// <summary>
+		/// Registers a given <see cref="IDataStoreModel"/> and generates a <see cref="IEditorDrawable"/>
+		/// view for the model.
+		/// </summary>
+		/// <param name="model">Model to register.</param>
+		/// <returns>A new view setup to push messages back to the model.</returns>
 		public IEditorDrawable RegisterModel(IDataStoreModel model)
 		{
 			if (model is DataStoreModel<CollectionComponentDataStore>)
@@ -17,6 +27,12 @@ namespace GladBehaviour.Editor
 				return RegisterModel(model as DataStoreModel<SingleComponentDataStore>);
 		}
 
+		/// <summary>
+		/// Registers a given <see cref="DataStoreModel{SingleComponentDataStore}"/> and generates a <see cref="IEditorDrawable"/>
+		/// view for the model.
+		/// </summary>
+		/// <param name="model">Model to register.</param>
+		/// <returns>A new view setup to push messages back to the model.</returns>
 		public IEditorDrawable RegisterModel(DataStoreModel<SingleComponentDataStore> model)
 		{
 			SingleView view = new SingleView(() => model.SerializedObject?.StoredComponent, model.DataType, model.SerializedName);
@@ -26,6 +42,12 @@ namespace GladBehaviour.Editor
 			return view;
 		}
 
+		/// <summary>
+		/// Registers a given <see cref="DataStoreModel{CollectionComponentDataStore}"/> and generates a <see cref="IEditorDrawable"/>
+		/// view for the model.
+		/// </summary>
+		/// <param name="model">Model to register.</param>
+		/// <returns>A new view setup to push messages back to the model.</returns>
 		public IEditorDrawable RegisterModel(DataStoreModel<CollectionComponentDataStore> model)
 		{
 			//create the view for lists
