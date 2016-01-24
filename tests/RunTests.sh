@@ -1,0 +1,1 @@
+nunit-console -framework=Mono-4.0 ./GladBehaviour.Tests/bin/Debug/GladBehaviour.Tests.dll

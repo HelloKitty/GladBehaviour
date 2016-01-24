@@ -56,7 +56,7 @@ namespace GladBehaviour.Editor
 
 			UnityEngine.Object objectValue = objectValueProvider() as UnityEngine.Object;
 				
-            builder.AppendFormat("{0} {1}->{2}", GetLabelName(memberName), objectValue != null ? objectValue.name : "", objectValue != null ? objectValue.GetType().Name : "");
+            builder.AppendFormat("{0}: {1}->{2}", GetLabelName(memberName), objectValue != null ? objectValue.name : "", objectValue != null ? objectValue.GetType().Name : "");
 
 			EditorGUI.BeginChangeCheck();
 			objectValue = EditorGUILayout.ObjectField(new GUIContent(builder.ToString()), objectValue, serializedObjectType, true) as UnityEngine.Object;

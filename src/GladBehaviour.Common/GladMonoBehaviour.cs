@@ -174,7 +174,11 @@ namespace GladBehaviour.Common
 
 		private bool isInterfaceCollectionType(Type type)
 		{
-			return type != null && type.IsGenericType && typeof(IEnumerable).IsAssignableFrom(type) && !type.GetGenericArguments().First().IsPrimitive;
+			Debug.Log("Checking type of: " + type.ToString() + " if it's collection.");
+			bool result = type != null && type.IsGenericType && typeof(IEnumerable).IsAssignableFrom(type) && !type.GetGenericArguments().First().IsPrimitive;
+			Debug.Log("Was: " + result);
+
+			return result;
 		}
 
 		private void RemoveSerializedContainers<TSerializedContainerType>(IEnumerable<TSerializedContainerType> toRemove, ICollection<TSerializedContainerType> collection)

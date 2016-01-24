@@ -1,0 +1,1 @@
+xbuild ./GladBehaviour.sln /p:DebugSymbols=False
