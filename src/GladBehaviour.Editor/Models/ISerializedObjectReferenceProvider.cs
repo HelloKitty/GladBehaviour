@@ -7,6 +7,9 @@ namespace GladBehaviour.Editor
 {
 	public interface ISerializedObjectReferenceProvider
 	{
+		/// <summary>
+		/// Serialized container object.
+		/// </summary>
 		object SerializedObject { get; }
 	}
 }
