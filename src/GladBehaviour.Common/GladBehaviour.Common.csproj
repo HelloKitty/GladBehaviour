@@ -55,6 +55,7 @@
     <Compile Include="DataStores\IUpdatable.cs" />
     <Compile Include="DataStores\SingleComponentDataStore.cs" />
     <Compile Include="GladMonoBehaviour.cs" />
+    <Compile Include="Helpers\SingleContainerFieldMatcher.cs" />
     <Compile Include="Helpers\CollectionContainerFieldMatcher.cs" />
     <Compile Include="Helpers\ContainerParser.cs" />
     <Compile Include="Helpers\GeneralContainerFieldMatcher.cs" />

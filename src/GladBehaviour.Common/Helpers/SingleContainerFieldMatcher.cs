@@ -7,9 +7,9 @@ using Fasterflect;
 
 namespace GladBehaviour.Common
 {
-	public class CollectionContainerFieldMatcher : GeneralContainerFieldMatcher, IContainerFieldMatcher
+	public class SingleContainerFieldMatcher : GeneralContainerFieldMatcher, IContainerFieldMatcher
 	{
-		public CollectionContainerFieldMatcher(Type typeToParse)
+		public SingleContainerFieldMatcher(Type typeToParse)
 			: base(typeToParse)
 		{
 			if (typeToParse == null)
@@ -38,24 +38,16 @@ namespace GladBehaviour.Common
 
 			return sortedFieldInfo.Value.Values
 				.Where(x => !tempDictionary.ContainsKey(x.Name)) //where we don't already have a mapped name
-				.Where(x => SerializedTypeManipulator.isInterfaceCollectionType(x.Type())); //where it's an interface collection type
+				.Where(x => !SerializedTypeManipulator.isInterfaceCollectionType(x.Type())); //where it's NOT an interface collection type
 		}
 
 		public override bool hasMatch(ISerializableContainer container)
 		{
 			if (sortedFieldInfo.Value.ContainsKey(container.SerializedName))
-				if (SerializedTypeManipulator.isInterfaceCollectionType(sortedFieldInfo.Value[container.SerializedName].Type()))
-					if (sortedFieldInfo.Value[container.SerializedName].Type().IsGenericType) //if true then it's something like IEnumerable<ISomething>
-					{	
-						if (container.SerializedType == sortedFieldInfo.Value[container.SerializedName].Type().GetGenericArguments().First())
-							return true;
-					}
-					else
+				if (!SerializedTypeManipulator.isInterfaceCollectionType(sortedFieldInfo.Value[container.SerializedName].Type())) //make sure it's NOT
+					if (sortedFieldInfo.Value[container.SerializedName].Type() == container.SerializedType) //if true then it's something like IEnumerable<ISomething>
 					{
-						//It could still be an array. Those aren't considered generic
-						if (sortedFieldInfo.Value[container.SerializedName].Type().IsArray)
-							if (container.SerializedType == sortedFieldInfo.Value[container.SerializedName].Type().GetElementType())
-								return true;
+						return true;
 					}
 
 			return false;

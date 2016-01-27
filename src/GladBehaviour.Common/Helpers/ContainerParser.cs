@@ -45,7 +45,7 @@ namespace GladBehaviour.Common
 			return staleFields;
 		}
 
-		private IEnumerable<FieldInfo> FindNewCollectionMembers()
+		public IEnumerable<FieldInfo> FindNewCollectionMembers()
 		{
 			return matchStrategy.FindUnContainedFields(containerCollection);
 		}
