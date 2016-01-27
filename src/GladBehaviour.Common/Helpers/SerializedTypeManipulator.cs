@@ -12,7 +12,24 @@ namespace GladBehaviour.Common
 	{
 		public static bool isInterfaceCollectionType(Type type)
 		{
-			return type != null && type.IsGenericType && typeof(IEnumerable).IsAssignableFrom(type) && !type.GetGenericArguments().First().IsPrimitive;
+			if (type != null)
+				if (typeof(IEnumerable).IsAssignableFrom(type))
+					if (type.IsGenericType) //if it's a generic type like IEnumerable<ISomething> then we're good
+					{
+						if (type.GetGenericArguments().First().IsInterface)
+							return true;
+					}
+					else
+					{
+						//If it's not a generic type it may be an array type.
+						//Array types aren't considered generic types
+						if (type.IsArray)
+							if (type.GetElementType().IsInterface)
+								return true;
+					}
+					
+
+			return false;
 		}
 	}
 }
