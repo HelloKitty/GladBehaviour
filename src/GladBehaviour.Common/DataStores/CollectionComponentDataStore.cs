@@ -199,6 +199,8 @@ namespace GladBehaviour.Common
 		/// <returns>A enumerable collection of type IEnumerable{T} where T is <see cref="SerializedType"/>.</returns>
 		public IEnumerable ToCollectionType()
 		{
+
+			//TODO: Refactor this and maybe move it into a dependency
 			lock(syncObj)
 			{
 				//check if it's generic first
@@ -218,6 +220,14 @@ namespace GladBehaviour.Common
 						throw new InvalidOperationException("Unable to handle type: " + SerializedCollectionType.GetGenericTypeDefinition().Name);
 					}
 				}
+				else
+				{
+					//It could be an array
+					if(SerializedCollectionType.IsArray)
+					{
+						return this.CallMethod(new Type[] { typeof(UnityEngine.Object), SerializedType }, nameof(ConvertToArray), new object[] { this.dataStoreCollection }) as IEnumerable;
+					}
+				}
 
 				throw new InvalidOperationException("Unable to handle type: " + SerializedCollectionType);
 			}
@@ -234,6 +244,19 @@ namespace GladBehaviour.Common
 		{
 			lock (syncObj)
 				return source.Cast<TDestinationType>().ToList(); //casts and then converts to a list.
+		}
+
+		/// <summary>
+		/// Converts a collection from <typeparamref name="TSourceType"/> to <typeparamref name="TDestinationType"/>.
+		/// </summary>
+		/// <typeparam name="TSourceType">Source type of the collection.</typeparam>
+		/// <typeparam name="TDestinationType">Desired destination type.</typeparam>
+		/// <param name="source"></param>
+		/// <returns>Array collection of <typeparamref name="TDestinationType"/> for {T}.</returns>
+		private TDestinationType[] ConvertToArray<TSourceType, TDestinationType>(IEnumerable<TSourceType> source)
+		{
+			lock (syncObj)
+				return source.Cast<TDestinationType>().ToArray(); //casts and then converts to an array
 		}
 	}
 }
