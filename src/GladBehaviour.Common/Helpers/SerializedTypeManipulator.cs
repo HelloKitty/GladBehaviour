@@ -2,7 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using Fasterflect;
+using UnityEngine;
 
 namespace GladBehaviour.Common
 {
@@ -30,6 +33,16 @@ namespace GladBehaviour.Common
 					
 
 			return false;
+		}
+
+		public static IEnumerable<FieldInfo> GetCollectionFields(Type t)
+		{
+			if (t == null)
+				throw new ArgumentNullException(nameof(t), "Type to be parsed for collection fields must not be null.");
+
+			return t.FieldsWith(Flags.InstanceAnyVisibility, typeof(SerializeField))
+				.Where(x => !x.HasAttribute<HideInInspector>()) //don't want hidden members
+				.Where(x => isInterfaceCollectionType(x.Type()));
 		}
 	}
 }

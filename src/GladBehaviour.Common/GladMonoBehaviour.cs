@@ -92,7 +92,7 @@ namespace GladBehaviour.Common
 			List<FieldInfo> newFields = new List<FieldInfo>();
 
 			//Cache this outside so it's not done N times.
-			IEnumerable<FieldInfo> fields = GetCollectionFields();
+			IEnumerable<FieldInfo> fields = SerializedTypeManipulator.GetCollectionFields(this.GetType());
 
 			foreach (FieldInfo fi in fields)
 			{
@@ -101,7 +101,7 @@ namespace GladBehaviour.Common
 				foreach (CollectionComponentDataStore ccd in collectionDataStoreCollection)
 				{
 					if (ccd.SerializedName == fi.Name)
-						if(isInterfaceCollectionType(fi.Type()))
+						if(SerializedTypeManipulator.isInterfaceCollectionType(fi.Type()))
                             if (ccd.SerializedType == fi.Type().GetGenericArguments().First())
 							{
 								foundMatch = true;
@@ -127,7 +127,7 @@ namespace GladBehaviour.Common
 				return staleFields;
 
 			//Cache this outside so it's not done N times.
-			IEnumerable<FieldInfo> fields = GetCollectionFields();
+			IEnumerable<FieldInfo> fields = SerializedTypeManipulator.GetCollectionFields(this.GetType());
 
 			//WARNING: This is O(n^2) so may need improvements
 			foreach (CollectionComponentDataStore ccd in collectionDataStoreCollection)
@@ -149,7 +149,7 @@ namespace GladBehaviour.Common
 					if (ccd.SerializedName == fi.Name)
 					{
 						//Check if it's a collection type we handle
-						if(isInterfaceCollectionType(fi.Type()))
+						if (SerializedTypeManipulator.isInterfaceCollectionType(fi.Type()))
 						{
 							//We could handle less derived type found but this complicates the logic
 							if (ccd.SerializedType == fi.Type().GetGenericArguments().First())
@@ -166,19 +166,10 @@ namespace GladBehaviour.Common
 				{
 					staleFields.Add(ccd);
 				}
-					
+
 			}
 
 			return staleFields;
-		}
-
-		private bool isInterfaceCollectionType(Type type)
-		{
-			Debug.Log("Checking type of: " + type.ToString() + " if it's collection.");
-			bool result = type != null && type.IsGenericType && typeof(IEnumerable).IsAssignableFrom(type) && !type.GetGenericArguments().First().IsPrimitive;
-			Debug.Log("Was: " + result);
-
-			return result;
 		}
 
 		private void RemoveSerializedContainers<TSerializedContainerType>(IEnumerable<TSerializedContainerType> toRemove, ICollection<TSerializedContainerType> collection)
@@ -234,16 +225,6 @@ namespace GladBehaviour.Common
 			}
 
 			return staleFields;
-		}
-
-		private IEnumerable<FieldInfo> GetCollectionFields()
-		{
-			return GetType().FieldsWith(Flags.InstanceAnyVisibility, typeof(SerializeField))
-				.Where(x => !x.HasAttribute<HideInInspector>()) //don't want hidden members
-				.Where(x => typeof(IEnumerable).IsAssignableFrom(x.Type())) //we don't want collection types
-				.Where(x => x.Type().IsGenericType) //we want generic collections where T is interface
-				.Where(x => x.Type().GetGenericArguments().First().IsInterface)
-				.Where(x => !x.Type().GetGenericArguments().First().IsPrimitive);
 		}
 
 		private IEnumerable<FieldInfo> FindNewInterfaceMembers()
