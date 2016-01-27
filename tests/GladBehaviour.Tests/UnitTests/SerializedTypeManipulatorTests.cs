@@ -35,6 +35,7 @@ namespace GladBehaviour.Tests
 		[TestCase(typeof(ICollection<DataAttribute>))]
 		[TestCase(typeof(ICollection<int>))]
 		[TestCase(typeof(ICollection))]
+		[TestCase(null)]
 		public static void Test_isInterfaceCollectionType_Returns_False_On_UnExpected_Types(Type t)
 		{
 			//arrange
@@ -44,7 +45,7 @@ namespace GladBehaviour.Tests
 			result = SerializedTypeManipulator.isInterfaceCollectionType(t);
 
 			//assert
-			Assert.IsFalse(result, "UnExpected Type: {0} was considered an interface collection", t.FullName);
+			Assert.IsFalse(result, "UnExpected Type: {0} was considered an interface collection", t?.FullName);
 		}
 	}
 }
