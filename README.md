@@ -1,6 +1,15 @@
 # GladBehaviour
-An extended MonoBehaviour class for Unity3D projects that offer additional functionality.
+Library that uses that Unity3D MonoBehaviour class as a vector to deliver additional functionality to behaviours.
 
+##Features
+
+Current Features:
+* Draws interface fields to the inspector
+* Draws collections of interface fields to the inspector
+
+##How to Use
+
+Build the VS solution, import the built DLLs, mark the xxx.Editor.dll file as an editor only file and then inherit from GladMonoBehaviour instead of MonoBehaviour to gain the additional functionality.
 
 ##Builds
 
