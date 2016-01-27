@@ -52,6 +52,8 @@
     <Compile Include="DataStores\IUpdatable.cs" />
     <Compile Include="DataStores\SingleComponentDataStore.cs" />
     <Compile Include="GladMonoBehaviour.cs" />
+    <Compile Include="Helpers\ContainerParser.cs" />
+    <Compile Include="Helpers\IContainerFieldMatcher.cs" />
     <Compile Include="Helpers\SerializedTypeManipulator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\FasterflectReflectionStrategy.cs" />
