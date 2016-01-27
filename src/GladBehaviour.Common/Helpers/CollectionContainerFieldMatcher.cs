@@ -7,23 +7,16 @@ using Fasterflect;
 
 namespace GladBehaviour.Common
 {
-	public class CollectionContainerFieldMatcher : IContainerFieldMatcher
+	public class CollectionContainerFieldMatcher : GeneralContainerFieldMatcher, IContainerFieldMatcher
 	{
-		private readonly Type parseTarget;
-
-		private readonly Lazy<Dictionary<string, FieldInfo>> sortedFieldInfo;
-
 		public CollectionContainerFieldMatcher(Type typeToParse)
+			: base(typeToParse)
 		{
 			if (typeToParse == null)
 				throw new ArgumentNullException(nameof(typeToParse), "Cannot parse a null type.");
+		}
 
-			parseTarget = typeToParse;
-
-			sortedFieldInfo = new Lazy<Dictionary<string, FieldInfo>>(CreateDictionary, true);
-        }
-
-		public FieldInfo FindMatch(ISerializableContainer container)
+		public override FieldInfo FindMatch(ISerializableContainer container)
 		{
 			//if we find an exact matching field then we return it as the match
 			if(hasMatch(container))
@@ -34,12 +27,12 @@ namespace GladBehaviour.Common
 			return null;
         }
 
-		public IEnumerable<FieldInfo> FindUnContainedFields<TSerializableContainerType>(IEnumerable<TSerializableContainerType> containers) where TSerializableContainerType : ISerializableContainer
+		public override IEnumerable<FieldInfo> FindUnContainedFields<TSerializableContainerType>(IEnumerable<TSerializableContainerType> containers)
 		{
 			throw new NotImplementedException();
 		}
 
-		public bool hasMatch(ISerializableContainer container)
+		public override bool hasMatch(ISerializableContainer container)
 		{
 			if (sortedFieldInfo.Value.ContainsKey(container.SerializedName))
 				if (SerializedTypeManipulator.isInterfaceCollectionType(sortedFieldInfo.Value[container.SerializedName].Type()))
@@ -58,19 +51,5 @@ namespace GladBehaviour.Common
 
 			return false;
         }
-
-		private Dictionary<string, FieldInfo> CreateDictionary()
-		{
-			Dictionary<string, FieldInfo> dict = new Dictionary<string, FieldInfo>();
-
-			//prepare the dictionary
-			//It'll help speed things up with O(1) lookup
-			foreach (FieldInfo fi in SerializedTypeManipulator.GetCollectionFields(parseTarget))
-			{
-				dict.Add(fi.Name, fi);
-			}
-
-			return dict;
-		}
 	}
 }

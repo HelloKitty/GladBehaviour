@@ -57,6 +57,7 @@
     <Compile Include="GladMonoBehaviour.cs" />
     <Compile Include="Helpers\CollectionContainerFieldMatcher.cs" />
     <Compile Include="Helpers\ContainerParser.cs" />
+    <Compile Include="Helpers\GeneralContainerFieldMatcher.cs" />
     <Compile Include="Helpers\IContainerFieldMatcher.cs" />
     <Compile Include="Helpers\SerializedTypeManipulator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
