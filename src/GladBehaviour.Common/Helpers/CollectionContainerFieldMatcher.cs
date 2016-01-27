@@ -29,7 +29,14 @@ namespace GladBehaviour.Common
 
 		public override IEnumerable<FieldInfo> FindUnContainedFields<TSerializableContainerType>(IEnumerable<TSerializableContainerType> containers)
 		{
-			throw new NotImplementedException();
+			//This may not actually be quicker but the idea is to create an O(1) lookup table that'll allow us
+			//to find members that we don't know yet
+			Dictionary<string, TSerializableContainerType> tempDictionary = new Dictionary<string, TSerializableContainerType>(containers.Count());
+
+			foreach (TSerializableContainerType con in containers)
+				tempDictionary.Add(con.SerializedName, con);
+
+			return sortedFieldInfo.Value.Values.Where(x => !tempDictionary.ContainsKey(x.Name));
 		}
 
 		public override bool hasMatch(ISerializableContainer container)
