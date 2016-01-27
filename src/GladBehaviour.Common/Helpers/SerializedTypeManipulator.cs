@@ -44,5 +44,25 @@ namespace GladBehaviour.Common
 				.Where(x => !x.HasAttribute<HideInInspector>()) //don't want hidden members
 				.Where(x => isInterfaceCollectionType(x.Type()));
 		}
+
+		public static Type CollectionInferaceType(Type t)
+		{
+			if (t == null)
+				throw new ArgumentNullException(nameof(t), "The type cannot be null.");
+
+			if (!isInterfaceCollectionType(t))
+				throw new InvalidOperationException("Cannot find the collection Type of a non interface collection.");
+
+			if (t.IsGenericType) //has a generic arg then
+				return t.GetGenericArguments().First();
+			else
+			{
+				//maybe it's an array
+				if (t.IsArray)
+					return t.GetElementType();
+			}
+
+			throw new InvalidOperationException(t.FullName + " is not a valid interface collection type.");
+		}
 	}
 }
