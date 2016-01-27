@@ -76,192 +76,31 @@ namespace GladBehaviour.Common
 
 		private void InitializeSerializedCollectionContainers()
 		{
+			ContainerParser<CollectionComponentDataStore> collectionContainerParser = 
+				new ContainerParser<CollectionComponentDataStore>(collectionDataStoreCollection, new CollectionContainerFieldMatcher(this.GetType()));
+
+			ContainerParser<SingleComponentDataStore> singleContainerParser =
+				new ContainerParser<SingleComponentDataStore>(singleDataStoreCollection, new SingleContainerFieldMatcher(this.GetType()));
+
 			//Find the removed interfaces and remove them from the collection
-			RemoveSerializedContainers(FindRemovedInterfaceMembers(), singleDataStoreCollection);
+			RemoveSerializedContainers(singleContainerParser.ComputeStaleContainers(), singleDataStoreCollection);
 			//Find the new members and create serialized containers for them
-			singleDataStoreCollection.AddRange(FindNewInterfaceMembers().Select(x => new SingleComponentDataStore(x.Type(), x.Name)));
+			singleDataStoreCollection.AddRange(singleContainerParser.FindNewCollectionMembers().Select(x => new SingleComponentDataStore(x.Type(), x.Name)));
 
 			//At this point all non-collection interfaces have containers in the serializable collection
 			//We must now do the same for Collection types
-			RemoveSerializedContainers(FindRemovedCollectionsMembers(), collectionDataStoreCollection);
-			collectionDataStoreCollection.AddRange(FindNewCollectionMembers().Select(x => new CollectionComponentDataStore(x.Type().GetGenericArguments().First(), x.Type(), x.Name)));
-		}
-
-		private IEnumerable<FieldInfo> FindNewCollectionMembers()
-		{
-			List<FieldInfo> newFields = new List<FieldInfo>();
-
-			//Cache this outside so it's not done N times.
-			IEnumerable<FieldInfo> fields = SerializedTypeManipulator.GetCollectionFields(this.GetType());
-
-			foreach (FieldInfo fi in fields)
-			{
-				bool foundMatch = false;
-
-				foreach (CollectionComponentDataStore ccd in collectionDataStoreCollection)
-				{
-					if (ccd.SerializedName == fi.Name)
-						if(SerializedTypeManipulator.isInterfaceCollectionType(fi.Type()))
-                            if (ccd.SerializedType == fi.Type().GetGenericArguments().First())
-							{
-								foundMatch = true;
-								break;
-							}
-				}
-
-				//If a match wasn't found it's a new field and we should add it
-				if (!foundMatch)
-					newFields.Add(fi);
-			}
-
-			return newFields;
-		}
-
-		//TODO: Find a way to merge code with interface one
-		private IEnumerable<CollectionComponentDataStore> FindRemovedCollectionsMembers()
-		{
-			List<CollectionComponentDataStore> staleFields = new List<CollectionComponentDataStore>();
-
-			//if it's empty we don't need to do searches
-			if (collectionDataStoreCollection.Count == 0)
-				return staleFields;
-
-			//Cache this outside so it's not done N times.
-			IEnumerable<FieldInfo> fields = SerializedTypeManipulator.GetCollectionFields(this.GetType());
-
-			//WARNING: This is O(n^2) so may need improvements
-			foreach (CollectionComponentDataStore ccd in collectionDataStoreCollection)
-			{
-				//If the Type is no longer in an assembly/changed then we remove it without checking
-				if (!ccd.canLoadType)
-				{
-					//Debug.Log("Found stale type.");
-
-					staleFields.Add(ccd);
-					continue;
-				}
-
-				bool foundTheField = false;
-
-				//If we get here we need to look at 
-				foreach (FieldInfo fi in fields)
-				{
-					if (ccd.SerializedName == fi.Name)
-					{
-						//Check if it's a collection type we handle
-						if (SerializedTypeManipulator.isInterfaceCollectionType(fi.Type()))
-						{
-							//We could handle less derived type found but this complicates the logic
-							if (ccd.SerializedType == fi.Type().GetGenericArguments().First())
-								foundTheField = true;
-						}
-
-						//We break after we find a match
-						break;
-					}
-				}
-
-				//We didn't find its match
-				if (!foundTheField)
-				{
-					staleFields.Add(ccd);
-				}
-
-			}
-
-			return staleFields;
+			RemoveSerializedContainers(collectionContainerParser.ComputeStaleContainers(), collectionDataStoreCollection);
+			collectionDataStoreCollection.AddRange(collectionContainerParser.FindNewCollectionMembers().Select(x => new CollectionComponentDataStore(SerializedTypeManipulator.CollectionInferaceType(x.Type()), x.Type(), x.Name)));
 		}
 
 		private void RemoveSerializedContainers<TSerializedContainerType>(IEnumerable<TSerializedContainerType> toRemove, ICollection<TSerializedContainerType> collection)
 			where TSerializedContainerType : ISerializableContainer
 		{
-			foreach(TSerializedContainerType o in toRemove)
+			foreach (TSerializedContainerType o in toRemove)
 			{
 				//Debug.Log("Removing: " + o?.ToString() + " with storetype: " + typeof(TSerializedContainerType).ToString());
 				collection.Remove(o);
 			}
-		}
-
-		private IEnumerable<SingleComponentDataStore> FindRemovedInterfaceMembers()
-		{
-			List<SingleComponentDataStore> staleFields = new List<SingleComponentDataStore>();
-
-			//if it's empty we don't need to do searches
-			if (singleDataStoreCollection.Count == 0)
-				return staleFields;
-
-			//Cache this outside so it's not done N times.
-			IEnumerable<FieldInfo> fields = GetInterfaceFields();
-
-			//WARNING: This is O(n^2) so may need improvements
-			foreach(SingleComponentDataStore scd in singleDataStoreCollection)
-			{
-				//If the Type is no longer in an assembly/changed then we remove it without checking
-				if (!scd.canLoadType)
-				{
-					staleFields.Add(scd);
-					continue;
-				}
-
-				bool foundTheField = false;
-
-				//If we get here we need to look at 
-				foreach (FieldInfo fi in fields)
-				{
-					if (scd.SerializedName == fi.Name)
-					{
-						//We could handle less derived type found but this complicates the logic
-						if (scd.SerializedType == fi.Type())
-							foundTheField = true;
-
-						//We break after we find a match
-						break;
-					}
-				}
-				
-				//We didn't find its match
-				if (!foundTheField)
-					staleFields.Add(scd);
-			}
-
-			return staleFields;
-		}
-
-		private IEnumerable<FieldInfo> FindNewInterfaceMembers()
-		{
-			List<FieldInfo> newFields = new List<FieldInfo>();
-
-			//Cache this outside so it's not done N times.
-			IEnumerable<FieldInfo> fields = GetInterfaceFields();
-
-			foreach(FieldInfo fi in fields)
-			{
-				bool foundMatch = false;
-
-				foreach(SingleComponentDataStore scd in singleDataStoreCollection)
-				{
-					if (scd.SerializedName == fi.Name)
-						if (scd.SerializedType == fi.Type())
-						{
-							foundMatch = true;
-							break;
-						}
-				}
-
-				//If a match wasn't found it's a new field and we should add it
-				if (!foundMatch)
-					newFields.Add(fi);
-            }
-
-			return newFields;
-		}
-
-		private IEnumerable<FieldInfo> GetInterfaceFields()
-		{
-			return GetType().FieldsWith(Flags.InstanceAnyVisibility, typeof(SerializeField))
-				.Where(x => x.Type().IsInterface) //we want interface types only
-				.Where(x => !typeof(IEnumerable).IsAssignableFrom(x.Type())) //we don't want collection types
-				.Where(x => !x.HasAttribute<HideInInspector>()); //don't want hidden members
 		}
 
 		public void OnBeforeSerialize()
