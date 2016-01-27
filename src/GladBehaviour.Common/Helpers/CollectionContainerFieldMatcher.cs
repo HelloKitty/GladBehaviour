@@ -11,10 +11,7 @@ namespace GladBehaviour.Common
 	{
 		private readonly Type parseTarget;
 
-		//TODO: Implement Lazy<T> for this field. Maybe use the crappy NetEssentials lib version
-		private Dictionary<string, FieldInfo> sortedFieldInfo;
-
-		private readonly object syncObj = new object();
+		private readonly Lazy<Dictionary<string, FieldInfo>> sortedFieldInfo;
 
 		public CollectionContainerFieldMatcher(Type typeToParse)
 		{
@@ -22,32 +19,17 @@ namespace GladBehaviour.Common
 				throw new ArgumentNullException(nameof(typeToParse), "Cannot parse a null type.");
 
 			parseTarget = typeToParse;
+
+			sortedFieldInfo = new Lazy<Dictionary<string, FieldInfo>>(CreateDictionary, true);
         }
 
 		public FieldInfo FindMatch(ISerializableContainer container)
 		{
-			//double check locking
-			if(sortedFieldInfo == null)
-				lock(syncObj)
-					if (sortedFieldInfo == null)
-					{
-						//prepare the dictionary
-						//It'll help speed things up with O(1) lookup
-						sortedFieldInfo = new Dictionary<string, FieldInfo>();
-						
-						foreach(FieldInfo fi in SerializedTypeManipulator.GetCollectionFields(parseTarget))
-						{
-							sortedFieldInfo.Add(fi.Name, fi);
-						}
-					}
-						
-
-			if (sortedFieldInfo.ContainsKey(container.SerializedName))
-				if (SerializedTypeManipulator.isInterfaceCollectionType(sortedFieldInfo[container.SerializedName].Type()))
-					if (container.SerializedType == sortedFieldInfo[container.SerializedName].Type().GetGenericArguments().First())
-					{
-						return sortedFieldInfo[container.SerializedName];
-                    }
+			//if we find an exact matching field then we return it as the match
+			if(hasMatch(container))
+			{
+				return sortedFieldInfo.Value[container.SerializedName];
+            }
 
 			return null;
         }
@@ -59,12 +41,36 @@ namespace GladBehaviour.Common
 
 		public bool hasMatch(ISerializableContainer container)
 		{
-			throw new NotImplementedException();
-		}
+			if (sortedFieldInfo.Value.ContainsKey(container.SerializedName))
+				if (SerializedTypeManipulator.isInterfaceCollectionType(sortedFieldInfo.Value[container.SerializedName].Type()))
+					if (sortedFieldInfo.Value[container.SerializedName].Type().IsGenericType) //if true then it's something like IEnumerable<ISomething>
+					{	
+						if (container.SerializedType == sortedFieldInfo.Value[container.SerializedName].Type().GetGenericArguments().First())
+							return true;
+					}
+					else
+					{
+						//It could still be an array. Those aren't considered generic
+						if (sortedFieldInfo.Value[container.SerializedName].Type().IsArray)
+							if (container.SerializedType == sortedFieldInfo.Value[container.SerializedName].Type().GetElementType())
+								return true;
+					}
 
-		private void EnsureDataInit()
+			return false;
+        }
+
+		private Dictionary<string, FieldInfo> CreateDictionary()
 		{
+			Dictionary<string, FieldInfo> dict = new Dictionary<string, FieldInfo>();
 
+			//prepare the dictionary
+			//It'll help speed things up with O(1) lookup
+			foreach (FieldInfo fi in SerializedTypeManipulator.GetCollectionFields(parseTarget))
+			{
+				dict.Add(fi.Name, fi);
+			}
+
+			return dict;
 		}
 	}
 }
