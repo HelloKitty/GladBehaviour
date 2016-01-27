@@ -8,7 +8,7 @@ using Fasterflect;
 namespace GladBehaviour.Common
 {
 	public class ContainerParser<TSerializedContainerType>
-		where TSerializedContainerType : ISerializableContainer
+		where TSerializedContainerType : class, ISerializableContainer
     {
 		private readonly IEnumerable<TSerializedContainerType> containerCollection;
 
@@ -26,15 +26,15 @@ namespace GladBehaviour.Common
 			matchStrategy = matchStrat;
         }
 
-		public IEnumerable<ISerializableContainer> ComputeStaleContainers()
+		public IEnumerable<TSerializedContainerType> ComputeStaleContainers()
 		{
-			List<ISerializableContainer> staleFields = new List<ISerializableContainer>(containerCollection.Count()); //Too large an allocation is probably better than multiple
+			List<TSerializedContainerType> staleFields = new List<TSerializedContainerType>(containerCollection.Count()); //Too large an allocation is probably better than multiple
 
 			//if it's empty we don't need to do searches
 			if (containerCollection.Count() == 0)
 				return staleFields;
 
-			foreach (ISerializableContainer con in containerCollection)
+			foreach (TSerializedContainerType con in containerCollection)
 			{
 				//If it doesn't have a match we should
 				//add it to the collection so it can be removed
@@ -47,7 +47,7 @@ namespace GladBehaviour.Common
 
 		private IEnumerable<FieldInfo> FindNewCollectionMembers()
 		{
-			return matchStrategy.FindUnContainedFields(containerCollection.Cast<ISerializableContainer>());
+			return matchStrategy.FindUnContainedFields(containerCollection);
 		}
 	}
 }

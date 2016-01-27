@@ -12,6 +12,7 @@ namespace GladBehaviour.Common
 
 		FieldInfo FindMatch(ISerializableContainer container);
 
-		IEnumerable<FieldInfo> FindUnContainedFields(IEnumerable<ISerializableContainer> containers);
+		IEnumerable<FieldInfo> FindUnContainedFields<TSerializableContainerType>(IEnumerable<TSerializableContainerType> containers) //yes we could just use ISerializableContainerType but for then we'd need a cast if contravariance is not supported
+			where TSerializableContainerType : ISerializableContainer;
 	}
 }

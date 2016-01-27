@@ -55,7 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTests\ContainerParserTests.cs" />
     <Compile Include="UnitTests\SerializedTypeManipulatorTests.cs" />
+    <Compile Include="UnitTests\TestClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\GladBehaviour.Common\GladBehaviour.Common.csproj">
