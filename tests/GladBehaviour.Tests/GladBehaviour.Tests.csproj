@@ -58,6 +58,7 @@
     <Compile Include="UnitTests\CollectionContainerFieldMatcherTests.cs" />
     <Compile Include="UnitTests\ContainerParserTests.cs" />
     <Compile Include="UnitTests\SerializedTypeManipulatorTests.cs" />
+    <Compile Include="UnitTests\SingleContainerFieldMatcherTests.cs" />
     <Compile Include="UnitTests\TestClass.cs" />
   </ItemGroup>
   <ItemGroup>
