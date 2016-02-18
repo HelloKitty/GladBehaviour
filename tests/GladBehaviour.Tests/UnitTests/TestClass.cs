@@ -9,6 +9,9 @@ namespace GladBehaviour.Tests
 	public class TestClass
 	{
 		[SerializeField]
+		public IDisposable TestSingle;
+
+		[SerializeField]
 		public ICollection<IDisposable> Collection1;
 
 		[SerializeField]

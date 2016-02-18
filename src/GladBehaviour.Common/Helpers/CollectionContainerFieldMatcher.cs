@@ -9,12 +9,30 @@ namespace GladBehaviour.Common
 {
 	public class CollectionContainerFieldMatcher : GeneralContainerFieldMatcher, IContainerFieldMatcher
 	{
+		private Lazy<Dictionary<string, FieldInfo>> sortedFieldInfo;
+
+		private Dictionary<string, FieldInfo> CreateDictionary()
+		{
+			Dictionary<string, FieldInfo> dict = new Dictionary<string, FieldInfo>();
+
+			//prepare the dictionary
+			//It'll help speed things up with O(1) lookup
+			foreach (FieldInfo fi in SerializedTypeManipulator.GetCollectionFields(parseTarget))
+			{
+				dict.Add(fi.Name, fi);
+			}
+
+			return dict;
+		}
+
 		public CollectionContainerFieldMatcher(Type typeToParse)
 			: base(typeToParse)
 		{
 			if (typeToParse == null)
 				throw new ArgumentNullException(nameof(typeToParse), "Cannot parse a null type.");
-		}
+
+			sortedFieldInfo = new Lazy<Dictionary<string, FieldInfo>>(CreateDictionary, true);
+        }
 
 		public override FieldInfo FindMatch(ISerializableContainer container)
 		{
