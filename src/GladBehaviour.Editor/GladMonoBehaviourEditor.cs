@@ -55,6 +55,6 @@ namespace GladBehaviour.Editor
 				tempViewList.Add(controller.RegisterModel(dm));
 
 			views = tempViewList;
-        }
+		}
 	}
 }

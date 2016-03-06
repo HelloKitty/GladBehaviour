@@ -17,5 +17,5 @@ namespace GladBehaviour.Editor
 		/// the value the view is showing has changed.
 		/// </summary>
 		event OnValueChanged OnEditorValueChanged;
-    }
+	}
 }

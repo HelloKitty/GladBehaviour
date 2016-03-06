@@ -46,7 +46,7 @@ namespace GladBehaviour.Editor
 
 			dataBehaviour = behaviour;
 			reflectionStrat = strat;
-        }
+		}
 
 		IEnumerable<IDataStoreModel> BuildSingleModels()
 		{
@@ -86,7 +86,7 @@ namespace GladBehaviour.Editor
 				throw new InvalidOperationException("Unexpected Type of " + nameof(objValue) + " expected Type " + nameof(List<CollectionComponentDataStore>));
 
 			return dataStoreCollection.Select(x => new DataStoreModel<CollectionComponentDataStore>(x)).Cast<IDataStoreModel>();
-        }
+		}
 
 		IEnumerable<IDataStoreModel> IBehaviourRepository.BuildModels()
 		{

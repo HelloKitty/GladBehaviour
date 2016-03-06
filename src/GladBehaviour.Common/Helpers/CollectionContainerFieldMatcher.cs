@@ -32,7 +32,7 @@ namespace GladBehaviour.Common
 				throw new ArgumentNullException(nameof(typeToParse), "Cannot parse a null type.");
 
 			sortedFieldInfo = new Lazy<Dictionary<string, FieldInfo>>(CreateDictionary, true);
-        }
+		}
 
 		public override FieldInfo FindMatch(ISerializableContainer container)
 		{
@@ -40,10 +40,10 @@ namespace GladBehaviour.Common
 			if(hasMatch(container))
 			{
 				return sortedFieldInfo.Value[container.SerializedName];
-            }
+			}
 
 			return null;
-        }
+		}
 
 		public override IEnumerable<FieldInfo> FindUnContainedFields<TSerializableContainerType>(IEnumerable<TSerializableContainerType> containers)
 		{
@@ -77,6 +77,6 @@ namespace GladBehaviour.Common
 					}
 
 			return false;
-        }
+		}
 	}
 }

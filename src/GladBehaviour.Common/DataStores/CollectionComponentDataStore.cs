@@ -106,7 +106,7 @@ namespace GladBehaviour.Common
 			: this(Enumerable.Empty<UnityEngine.Object>(), dataType, collectionType, name)
 		{
 
-        }
+		}
 
 		/// <summary>
 		/// Creates an empty collection of the specified size with the specific inner type, collection type and name.

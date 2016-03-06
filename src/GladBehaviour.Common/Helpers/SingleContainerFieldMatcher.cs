@@ -44,10 +44,10 @@ namespace GladBehaviour.Common
 			if(hasMatch(container))
 			{
 				return sortedFieldInfo.Value[container.SerializedName];
-            }
+			}
 
 			return null;
-        }
+		}
 
 		public override IEnumerable<FieldInfo> FindUnContainedFields<TSerializableContainerType>(IEnumerable<TSerializableContainerType> containers)
 		{
@@ -73,6 +73,6 @@ namespace GladBehaviour.Common
 					}
 
 			return false;
-        }
+		}
 	}
 }

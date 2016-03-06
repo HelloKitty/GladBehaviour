@@ -45,7 +45,7 @@ namespace GladBehaviour.Editor
 			objectValueProvider = refProvider;
 			serializedObjectType = dataType;
 			memberName = propName;
-        }
+		}
 
 		/// <summary>
 		/// Draws the View.
@@ -56,7 +56,7 @@ namespace GladBehaviour.Editor
 
 			UnityEngine.Object objectValue = objectValueProvider() as UnityEngine.Object;
 				
-            builder.AppendFormat("{0}: {1}->{2}", GetLabelName(memberName), objectValue != null ? objectValue.name : "", objectValue != null ? objectValue.GetType().Name : "");
+			builder.AppendFormat("{0}: {1}->{2}", GetLabelName(memberName), objectValue != null ? objectValue.name : "", objectValue != null ? objectValue.GetType().Name : "");
 
 			EditorGUI.BeginChangeCheck();
 			objectValue = EditorGUILayout.ObjectField(new GUIContent(builder.ToString()), objectValue, serializedObjectType, true) as UnityEngine.Object;
@@ -78,6 +78,6 @@ namespace GladBehaviour.Editor
 				return "";
 			else
 				return Regex.Replace(s, @"(\B[A-Z]+?(?=[A-Z][^A-Z])|\B[A-Z]+?(?=[^A-Z]))", " $1");
-        }
+		}
 	}
 }

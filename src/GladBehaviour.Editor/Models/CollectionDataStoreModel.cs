@@ -52,7 +52,7 @@ namespace GladBehaviour.Editor
 				throw new ArgumentNullException(nameof(datas), "The container instance cannot be null.");
 
 			serializedObject = datas;
-        }
+		}
 
 		/// <summary>
 		/// Updates a value.

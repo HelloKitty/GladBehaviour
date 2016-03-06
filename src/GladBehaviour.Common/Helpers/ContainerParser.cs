@@ -9,7 +9,7 @@ namespace GladBehaviour.Common
 {
 	public class ContainerParser<TSerializedContainerType>
 		where TSerializedContainerType : class, ISerializableContainer
-    {
+	{
 		private readonly IEnumerable<TSerializedContainerType> containerCollection;
 
 		private readonly IContainerFieldMatcher matchStrategy;
@@ -24,7 +24,7 @@ namespace GladBehaviour.Common
 
 			containerCollection = collection;
 			matchStrategy = matchStrat;
-        }
+		}
 
 		public IEnumerable<TSerializedContainerType> ComputeStaleContainers()
 		{

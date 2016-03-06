@@ -72,7 +72,7 @@ namespace GladBehaviour.Common
 
 				fi.SetValue(this, ccd.ToCollectionType());
 			}
-        }
+		}
 
 		private void InitializeSerializedCollectionContainers()
 		{
