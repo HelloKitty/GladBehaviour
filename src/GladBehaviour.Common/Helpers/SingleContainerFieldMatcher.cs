@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Fasterflect;
+using UnityEngine;
 
 namespace GladBehaviour.Common
 {
@@ -19,7 +20,11 @@ namespace GladBehaviour.Common
 			//It'll help speed things up with O(1) lookup
 			IEnumerable<FieldInfo> fields = parseTarget.Fields(Flags.InstanceAnyVisibility)
 				.Where(fi => fi.Type().IsInterface) //find the interface fields
-				.Where(fi => !SerializedTypeManipulator.isInterfaceCollectionType(fi.Type())); //exclude the collection ones
+				.Where(fi => !SerializedTypeManipulator.isInterfaceCollectionType(fi.Type())) //exclude the collection ones
+				.Where(fi => (fi.IsPrivate && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null);
+
+				//the above where finds private fields marked SerializeField or public fields that aren't marked HideInInspector
+				//This can help ignore/weedout fields that are private for DI/IoC frameworks or for other purposes.
 
 			foreach (FieldInfo fi in fields)
 			{
@@ -60,14 +65,15 @@ namespace GladBehaviour.Common
 
 			return sortedFieldInfo.Value.Values
 				.Where(x => !tempDictionary.ContainsKey(x.Name)) //where we don't already have a mapped name
-				.Where(x => !SerializedTypeManipulator.isInterfaceCollectionType(x.Type())); //where it's NOT an interface collection type
+				.Where(x => !SerializedTypeManipulator.isInterfaceCollectionType(x.Type())) //where it's NOT an interface collection type
+				.Where(fi => (fi.IsPrivate && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null);
 		}
 
 		public override bool hasMatch(ISerializableContainer container)
 		{
 			if (sortedFieldInfo.Value.ContainsKey(container.SerializedName))
-				if (!SerializedTypeManipulator.isInterfaceCollectionType(sortedFieldInfo.Value[container.SerializedName].Type())) //make sure it's NOT
-					if (sortedFieldInfo.Value[container.SerializedName].Type() == container.SerializedType) //if true then it's something like IEnumerable<ISomething>
+				if (!SerializedTypeManipulator.isInterfaceCollectionType(sortedFieldInfo.Value[container.SerializedName].Type())) //make sure it's NOT something like IEnumerable<ISomething>
+					if (container.SerializedTypeName.Contains(sortedFieldInfo.Value[container.SerializedName].Type().Name)) //makes sure the Type is still approximately the same
 					{
 						return true;
 					}

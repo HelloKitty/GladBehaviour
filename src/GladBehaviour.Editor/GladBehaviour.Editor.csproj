@@ -64,6 +64,7 @@
     <Compile Include="Views\IEditorDrawable.cs" />
     <Compile Include="Views\IView.cs" />
     <Compile Include="Views\SingleView.cs" />
+    <Compile Include="Views\TypeLoadExceptionView.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GladBehaviour.Common\GladBehaviour.Common.csproj">

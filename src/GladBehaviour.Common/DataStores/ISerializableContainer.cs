@@ -21,6 +21,11 @@ namespace GladBehaviour.Common
 		Type SerializedType { get; }
 
 		/// <summary>
+		/// The serialized Type name that is being contained.
+		/// </summary>
+		string SerializedTypeName { get; }
+
+		/// <summary>
 		/// Serializable member name this container is serializing for.
 		/// </summary>
 		string SerializedName { get; }

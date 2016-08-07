@@ -88,6 +88,8 @@ namespace GladBehaviour.Common
 			}
 		}
 
+		public string SerializedTypeName { get { lock (syncObj) return serializedTypeName; } }
+
 		/// <summary>
 		/// Should only be called by Unity. Do not invoke this constructor manually.
 		/// </summary>

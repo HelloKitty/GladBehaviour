@@ -21,10 +21,19 @@ namespace GladBehaviour.Editor
 		/// <returns>A new view setup to push messages back to the model.</returns>
 		public IEditorDrawable RegisterModel(IDataStoreModel model)
 		{
-			if (model is DataStoreModel<CollectionComponentDataStore>)
-				return RegisterModel(model as DataStoreModel<CollectionComponentDataStore>);
-			else
-				return RegisterModel(model as DataStoreModel<SingleComponentDataStore>);
+			try
+			{
+				if (model is DataStoreModel<CollectionComponentDataStore>)
+					return RegisterModel(model as DataStoreModel<CollectionComponentDataStore>);
+				else
+					return RegisterModel(model as DataStoreModel<SingleComponentDataStore>);
+			}
+			catch(TypeLoadException e)
+			{
+				//This can happen if we're storing information that is no longer in the component
+				//We'll add error view handling if we can't handle it with user interaction.
+				throw;
+			}
 		}
 
 		/// <summary>

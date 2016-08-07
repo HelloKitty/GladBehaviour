@@ -58,6 +58,8 @@ namespace GladBehaviour.Common
 			}
 		}
 
+		public string SerializedTypeName { get { return serializedTypeName; } }
+
 		/// <summary>
 		/// Should only be called by Unity. Do not invoke this constructor manually.
 		/// </summary>
@@ -115,7 +117,7 @@ namespace GladBehaviour.Common
 			storedComponent = newValue as UnityEngine.Object;
 
 			if (storedComponent == null && newValue != null)
-				throw new InvalidOperationException("Component was null but newValue wasn't.");
+				throw new InvalidOperationException($"Provided component was not a valid {nameof(UnityEngine.Object)} and thus casting was null.");
 		}
 	}
 }
