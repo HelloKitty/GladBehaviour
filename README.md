@@ -5,7 +5,7 @@ Library that uses that Unity3D MonoBehaviour class as a vector to deliver additi
 
 Current Features:
 * Draws interface fields to the inspector
-* Draws collections of interface fields to the inspector
+* Draws collections of interface fields to the inspectsdfor
 
 ##Tests
 
