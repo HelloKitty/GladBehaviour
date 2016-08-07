@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace GladBehaviour.Editor
@@ -61,9 +62,13 @@ namespace GladBehaviour.Editor
 			EditorGUI.BeginChangeCheck();
 			objectValue = EditorGUILayout.ObjectField(new GUIContent(builder.ToString()), objectValue, serializedObjectType, true) as UnityEngine.Object;
 			if (EditorGUI.EndChangeCheck())
-				if (OnEditorValueChanged != null)
-					OnEditorValueChanged(this, new GladBehaviourValueChangedArgs(objectValue));
+			{
+				OnEditorValueChanged?.Invoke(this, new GladBehaviourValueChangedArgs(objectValue));
 
+				//WARNING: This call is needed to mark a scene dirty. There are cases where a scene
+				//won't save the data if not marked dirty.
+				EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+			}
 		}
 
 		/// <summary>
