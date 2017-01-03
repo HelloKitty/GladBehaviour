@@ -22,8 +22,11 @@ namespace GladBehaviour.Editor
 
 		public override void OnInspectorGUI()
 		{
+			//Draws the default for all fields we don't handle
+			DrawDefaultInspector();
+
 			//You shouldn't change components before repaint
-			if(Event.current.type == EventType.Layout)
+			if (Event.current.type == EventType.Layout)
 			{
 				if (views == null)
 					Init();
@@ -32,9 +35,6 @@ namespace GladBehaviour.Editor
 			//draws all views AKA the lists/fields
 			foreach (IEditorDrawable v in views)
 				v.Draw();
-
-			//Draws the default for all fields we don't handle
-			DrawDefaultInspector();
 		}
 
 		//Can't do this in constructor for some reason
