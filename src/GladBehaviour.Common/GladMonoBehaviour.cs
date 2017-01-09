@@ -23,6 +23,7 @@ namespace GladBehaviour.Common
 
 		public void OnAfterDeserialize()
 		{
+
 			//This is:
 			//Called once after a recompile
 			//Called once after the scene is loaded
@@ -36,22 +37,41 @@ namespace GladBehaviour.Common
 
 			//Check if the collections are empty
 
-			CheckAndInitEmptyDataStores();
+			try
+			{
+				CheckAndInitEmptyDataStores();
+			}
+			catch (Exception e)
+			{
+				Debug.LogError($"Failed to {nameof(CheckAndInitEmptyDataStores)} Error: {e.Message} StackTrace: {e.StackTrace}.");
+			}
 
-			//TODO: We should do a check if this is a compiled build. If it is we don't want the inefficiency of doing all the stuff below. We should just set values
-			InitializeSerializedCollectionContainers();
+			try
+			{
+				//TODO: We should do a check if this is a compiled build. If it is we don't want the inefficiency of doing all the stuff below. We should just set values
+				InitializeSerializedCollectionContainers();
+
+			}
+			catch (Exception e)
+			{
+				Debug.LogError($"Failed to {nameof(InitializeSerializedCollectionContainers)} Error: {e.Message} StackTrace: {e.StackTrace}.");
+			}
+
 
 			//Write the data to the fields
 			//All fields should be valid so we don't have to worry about trying to write to non-existant fields
-			foreach(SingleComponentDataStore scd in singleDataStoreCollection)
+			foreach (SingleComponentDataStore scd in singleDataStoreCollection)
 			{
 				if (scd.StoredComponent == null)
 					continue;
 
 				//Debug.Log("Dealing with: " + scd.SerializedName);
 
-				FieldInfo fi = this.GetType().GetField(scd.SerializedName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+				FieldInfo fi = this.GetType().Field(scd.SerializedName, Flags.InstanceAnyVisibility);
 				//Grabs the field info and writes the component being stored to it
+
+				if (fi == null)
+					throw new InvalidOperationException($"Failed to load Field: {scd.SerializedName} of Type: {scd.SerializedTypeName}");
 
 				//Debug.Log(scd.StoredComponent.GetType().ToString());
 
@@ -60,14 +80,14 @@ namespace GladBehaviour.Common
 
 			//Debug.Log("Count of Collections: " + collectionDataStoreCollection.Count);
 
-			foreach(CollectionComponentDataStore ccd in collectionDataStoreCollection)
+			foreach (CollectionComponentDataStore ccd in collectionDataStoreCollection)
 			{
 				//Debug.Log("Dealing with: " + ccd.SerializedName);
 
 				if (ccd.dataStoreCollection == null)
 					continue;
 
-				FieldInfo fi = this.GetType().GetField(ccd.SerializedName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+				FieldInfo fi = this.GetType().Field(ccd.SerializedName, Flags.InstanceAnyVisibility);
 				//Grabs the field info and writes the component being stored to it
 
 				fi.SetValue(this, ccd.ToCollectionType());
