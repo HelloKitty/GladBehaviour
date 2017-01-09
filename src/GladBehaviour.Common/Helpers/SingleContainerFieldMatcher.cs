@@ -21,10 +21,11 @@ namespace GladBehaviour.Common
 			IEnumerable<FieldInfo> fields = parseTarget.Fields(Flags.InstanceAnyVisibility)
 				.Where(fi => fi.Type().IsInterface) //find the interface fields
 				.Where(fi => !SerializedTypeManipulator.isInterfaceCollectionType(fi.Type())) //exclude the collection ones
-				.Where(fi => (fi.IsPrivate && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null);
+				.Where(fi => (fi.IsPrivate && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null)
+				.Where(fi => !fi.Type().IsValueType); //ignore value types.
 
-				//the above where finds private fields marked SerializeField or public fields that aren't marked HideInInspector
-				//This can help ignore/weedout fields that are private for DI/IoC frameworks or for other purposes.
+			//the above where finds private fields marked SerializeField or public fields that aren't marked HideInInspector
+			//This can help ignore/weedout fields that are private for DI/IoC frameworks or for other purposes.
 
 			foreach (FieldInfo fi in fields)
 			{

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEditorInternal;
 using UnityEngine;
 
@@ -70,8 +71,11 @@ namespace GladBehaviour.Editor
 
 			if(EditorGUI.EndChangeCheck()) //check if the editor changed since drawing the list
 			{
-				if (OnEditorValueChanged != null)
-					OnEditorValueChanged(this, new GladBehaviourValueChangedArgs(list.list));
+				OnEditorValueChanged?.Invoke(this, new GladBehaviourValueChangedArgs(list.list));
+
+				//WARNING: This call is needed to mark a scene dirty. There are cases where a scene
+				//won't save the data if not marked dirty.
+				EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
 			}
 		}
 
