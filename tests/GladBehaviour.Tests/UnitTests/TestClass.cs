@@ -10,7 +10,7 @@ namespace GladBehaviour.Tests
 	public class TestClass : TestGenericBase<TestEnum>
 	{
 		[SerializeField]
-		public IDisposable TestSingle;
+		protected IDisposable TestSingle;
 
 		[SerializeField]
 		public ICollection<IDisposable> Collection1;

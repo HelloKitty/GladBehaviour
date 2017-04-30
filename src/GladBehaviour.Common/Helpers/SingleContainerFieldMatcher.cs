@@ -21,7 +21,7 @@ namespace GladBehaviour.Common
 			IEnumerable<FieldInfo> fields = parseTarget.Fields(Flags.InstanceAnyVisibility)
 				.Where(fi => fi.Type().IsInterface) //find the interface fields
 				.Where(fi => !SerializedTypeManipulator.isInterfaceCollectionType(fi.Type())) //exclude the collection ones
-				.Where(fi => (fi.IsPrivate && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null)
+				.Where(fi => ((fi.IsPrivate || fi.IsFamily) && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null)
 				.Where(fi => !fi.Type().IsValueType); //ignore value types.
 
 			//the above where finds private fields marked SerializeField or public fields that aren't marked HideInInspector
@@ -67,7 +67,7 @@ namespace GladBehaviour.Common
 			return sortedFieldInfo.Value.Values
 				.Where(x => !tempDictionary.ContainsKey(x.Name)) //where we don't already have a mapped name
 				.Where(x => !SerializedTypeManipulator.isInterfaceCollectionType(x.Type())) //where it's NOT an interface collection type
-				.Where(fi => (fi.IsPrivate && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null);
+				.Where(fi => ((fi.IsPrivate || fi.IsFamily) && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null);
 		}
 
 		public override bool hasMatch(ISerializableContainer container)
