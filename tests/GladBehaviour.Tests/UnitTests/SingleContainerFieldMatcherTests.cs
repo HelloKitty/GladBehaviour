@@ -24,9 +24,12 @@ namespace GladBehaviour.Tests.UnitTests
 
 			//assert
 			Assert.NotNull(infos);
-			Assert.IsTrue(infos.Count() > 0);
-			Assert.IsTrue(infos.Where(i => i.Type() == typeof(IDisposable)).Count() != 0);
-			Assert.IsTrue(infos.Where(i => SerializedTypeManipulator.isInterfaceCollectionType(i.Type())).Count() == 0);
+			Assert.IsTrue(infos.Any());
+			Assert.IsTrue(infos.Any(i => i.Type() == typeof(IDisposable)));
+			Assert.IsTrue(!infos.Any(i => SerializedTypeManipulator.isInterfaceCollectionType(i.Type())));
+
+			//Check and make sure the protected field is there
+			Assert.IsTrue(infos.Any(i => i.Name == "TestSingle"));
 		}
 	}
 }

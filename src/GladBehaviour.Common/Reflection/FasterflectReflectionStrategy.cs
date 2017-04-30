@@ -12,53 +12,53 @@ namespace GladBehaviour.Common
 		public FieldInfo Field(Type t, string name, BindingFlags flags = BindingFlags.Default, Type withAttributeType = null)
 		{
 			if (withAttributeType == null)
-				return t.Field(name, flags);
+				return t.Field(name, flags | BindingFlags.NonPublic);
 			else
-				return t.FieldsWith(flags, withAttributeType).FirstOrDefault(x => x.Name == name);
+				return t.FieldsWith(flags | BindingFlags.NonPublic, withAttributeType).FirstOrDefault(x => x.Name == name);
 		}
 
 		public FieldInfo Field<TAttributeType>(Type t, BindingFlags flags = BindingFlags.Default) where TAttributeType : Attribute
 		{
-			return t.FieldsWith(flags, typeof(TAttributeType)).FirstOrDefault();
+			return t.FieldsWith(flags | BindingFlags.NonPublic, typeof(TAttributeType)).FirstOrDefault();
 		}
 
 		public FieldInfo Field<TAttributeType>(Type t, string name, BindingFlags flags = BindingFlags.Default) where TAttributeType : Attribute
 		{
-			return t.FieldsWith(flags, typeof(TAttributeType)).FirstOrDefault(x => name == x.Name);
+			return t.FieldsWith(flags | BindingFlags.NonPublic, typeof(TAttributeType)).FirstOrDefault(x => name == x.Name);
 		}
 
 		public IEnumerable<FieldInfo> Fields(Type t, BindingFlags flags = BindingFlags.Default, Type withAttributeType = null)
 		{
 			if (withAttributeType == null)
-				return t.Fields(flags);
+				return t.Fields(flags | BindingFlags.NonPublic);
 			else
-				return t.Fields(flags).Where(x => x.HasAttribute(withAttributeType));
+				return t.Fields(flags | BindingFlags.NonPublic).Where(x => x.HasAttribute(withAttributeType));
 		}
 
 		public IEnumerable<FieldInfo> Fields<TAttributeType>(Type t, BindingFlags flags = BindingFlags.Default) where TAttributeType : Attribute
 		{
-			return t.FieldsWith(flags, typeof(TAttributeType));
+			return t.FieldsWith(flags | BindingFlags.NonPublic, typeof(TAttributeType));
 		}
 
 		public IEnumerable<PropertyInfo> Properties(Type t, BindingFlags flags = BindingFlags.Default, Type withAttributeType = null)
 		{
 			if (withAttributeType == null)
-				return t.Properties(flags);
+				return t.Properties(flags | BindingFlags.NonPublic);
 			else
-				return t.Properties(flags).Where(x => x.HasAttribute(withAttributeType));
+				return t.Properties(flags | BindingFlags.NonPublic).Where(x => x.HasAttribute(withAttributeType));
 		}
 
 		public IEnumerable<PropertyInfo> Properties<TAttributeType>(Type t, BindingFlags flags = BindingFlags.Default) where TAttributeType : Attribute
 		{
-			return t.PropertiesWith(flags, typeof(TAttributeType));
+			return t.PropertiesWith(flags | BindingFlags.NonPublic, typeof(TAttributeType));
 		}
 
 		public PropertyInfo Property(Type t, string name, BindingFlags flags = BindingFlags.Default, Type withAttributeType = null)
 		{
 			if (withAttributeType == null)
-				return t.Properties(flags).FirstOrDefault();
+				return t.Properties(flags | BindingFlags.NonPublic).FirstOrDefault();
 			else
-				return t.Properties(flags).Where(x => x.HasAttribute(withAttributeType)).FirstOrDefault();
+				return t.Properties(flags | BindingFlags.NonPublic).FirstOrDefault(x => x.HasAttribute(withAttributeType));
 		}
 
 		public PropertyInfo Property<TAttributeType>(Type t, string name, BindingFlags flags = BindingFlags.Default) where TAttributeType : Attribute
