@@ -30,6 +30,7 @@ namespace GladBehaviour.Tests.UnitTests
 
 			//Check and make sure the protected field is there
 			Assert.IsTrue(infos.Any(i => i.Name == "TestSingle"));
+			Assert.IsTrue(infos.Any(i => i.Name.Contains(nameof(TestClass.TestSingleProp))));
 		}
 	}
 }

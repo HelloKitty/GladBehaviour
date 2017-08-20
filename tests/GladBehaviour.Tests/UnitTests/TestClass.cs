@@ -29,6 +29,12 @@ namespace GladBehaviour.Tests
 		public List<IDisposable> Collection5;
 
 		public List<IDisposable> Collection6;
+
+		[SerializeField]
+		public IDisposable TestSingleProp { get; }
+
+		[SerializeField]
+		public List<IDisposable> TestCollectionProp { get; }
 	}
 
 	public enum TestEnum

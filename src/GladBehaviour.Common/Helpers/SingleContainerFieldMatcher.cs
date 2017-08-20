@@ -18,11 +18,7 @@ namespace GladBehaviour.Common
 
 			//prepare the dictionary
 			//It'll help speed things up with O(1) lookup
-			IEnumerable<FieldInfo> fields = parseTarget.Fields(Flags.InstanceAnyVisibility)
-				.Where(fi => fi.Type().IsInterface) //find the interface fields
-				.Where(fi => !SerializedTypeManipulator.isInterfaceCollectionType(fi.Type())) //exclude the collection ones
-				.Where(fi => ((fi.IsPrivate || fi.IsFamily) && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null)
-				.Where(fi => !fi.Type().IsValueType); //ignore value types.
+			IEnumerable<FieldInfo> fields = GetSerializedInterfaceFields(parseTarget.Fields(Flags.InstanceAnyVisibility));
 
 			//the above where finds private fields marked SerializeField or public fields that aren't marked HideInInspector
 			//This can help ignore/weedout fields that are private for DI/IoC frameworks or for other purposes.
@@ -64,10 +60,26 @@ namespace GladBehaviour.Common
 			foreach (TSerializableContainerType con in containers)
 				tempDictionary.Add(con.SerializedName, con);
 
-			return sortedFieldInfo.Value.Values
-				.Where(x => !tempDictionary.ContainsKey(x.Name)) //where we don't already have a mapped name
+			return GetSerializedInterfaceFields(sortedFieldInfo.Value.Values)
+				.Where(x => !tempDictionary.ContainsKey(x.Name)); //where we don't already have a mapped name
+		}
+
+		private IEnumerable<FieldInfo> GetSerializedInterfaceFields(IEnumerable<FieldInfo> fields)
+		{
+			IEnumerable<FieldInfo> parsedFields = fields.Where(fi => fi.Type().IsInterface) //find the interface fields
 				.Where(x => !SerializedTypeManipulator.isInterfaceCollectionType(x.Type())) //where it's NOT an interface collection type
-				.Where(fi => ((fi.IsPrivate || fi.IsFamily) && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null);
+				.Where(fi => !SerializedTypeManipulator.isInterfaceCollectionType(fi.Type())) //exclude the collection ones
+				.Where(fi => ((fi.IsPrivate || fi.IsFamily) && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null)
+				.Where(fi => !fi.Type().IsValueType); //ignore value types.
+
+			IEnumerable<FieldInfo> backingFieldsToProps = parseTarget.Properties(Flags.InstanceAnyVisibility)
+				.Where(pi => pi.Type().IsInterface) //find the interface properties
+				.Where(pi => !SerializedTypeManipulator.isInterfaceCollectionType(pi.Type())) //exclude the collection ones
+				.Where(pi => pi.GetCustomAttribute<SerializeField>(true) != null)
+				.Where(pi => !pi.Type().IsValueType) //ignore value types.
+				.Select(pi => parseTarget.Field($"<{pi.Name}>k__BackingField")); //add the backing fields for the properties
+
+			return parsedFields.Concat(backingFieldsToProps);
 		}
 
 		public override bool hasMatch(ISerializableContainer container)
