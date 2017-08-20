@@ -19,8 +19,7 @@ namespace GladBehaviour.Common
 
 			//prepare the dictionary
 			//It'll help speed things up with O(1) lookup
-			IEnumerable<FieldInfo> fields = SerializedTypeManipulator.GetCollectionFields(parseTarget)
-				.Where(fi => (fi.IsPrivate && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null);
+			IEnumerable<FieldInfo> fields = GetSerializedInterfaceFields(parseTarget.Fields(Flags.InstanceAnyVisibility));
 
 			//the above where finds private fields marked SerializeField or public fields that aren't marked HideInInspector
 			//This can help ignore/weedout fields that are private for DI/IoC frameworks or for other purposes.
@@ -64,10 +63,22 @@ namespace GladBehaviour.Common
 			foreach (TSerializableContainerType con in containers)
 				tempDictionary.Add(con.SerializedName, con);
 
-			return sortedFieldInfo.Value.Values
-				.Where(x => !tempDictionary.ContainsKey(x.Name)) //where we don't already have a mapped name
-				.Where(x => SerializedTypeManipulator.isInterfaceCollectionType(x.Type())) //where it's an interface collection type
+			return GetSerializedInterfaceFields(sortedFieldInfo.Value.Values)
+				.Where(x => !tempDictionary.ContainsKey(x.Name)); //where we don't already have a mapped name
+		}
+
+		private IEnumerable<FieldInfo> GetSerializedInterfaceFields(IEnumerable<FieldInfo> fields)
+		{
+			IEnumerable<FieldInfo> parsedFields = fields //find the interface fields
+				.Where(fi => SerializedTypeManipulator.isInterfaceCollectionType(fi.Type())) //where it's an interface collection type
 				.Where(fi => (fi.IsPrivate && fi.GetCustomAttribute<SerializeField>(true) != null) || fi.IsPublic && fi.GetCustomAttribute<HideInInspector>(true) == null);
+
+			IEnumerable<FieldInfo> backingFieldsToProps = parseTarget.Properties(Flags.InstanceAnyVisibility)
+				.Where(pi => SerializedTypeManipulator.isInterfaceCollectionType(pi.Type())) //where it's an interface collection type
+				.Where(pi => pi.GetCustomAttribute<SerializeField>(true) != null)
+				.Select(pi => parseTarget.Field($"<{pi.Name}>k__BackingField")); //add the backing fields for the properties
+
+			return parsedFields.Concat(backingFieldsToProps);
 		}
 
 		public override bool hasMatch(ISerializableContainer container)

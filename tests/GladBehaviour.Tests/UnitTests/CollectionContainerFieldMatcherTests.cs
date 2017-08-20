@@ -41,6 +41,21 @@ namespace GladBehaviour.Tests.UnitTests
 			Assert.IsFalse(result, "Shouldn't have found a match.");
 		}
 
+		[Test]
+		public static void Test_CollectionContainerFieldMatcher_Produces_Expected_Results_With_Test_Class()
+		{
+			//arrange
+			CollectionContainerFieldMatcher matcher = new CollectionContainerFieldMatcher(typeof(TestClass));
+
+			//act
+			IEnumerable<FieldInfo> fieldsToAdd = matcher.FindUnContainedFields(Enumerable.Empty<CollectionComponentDataStore>());
+
+			//assert
+			Assert.IsNotEmpty(fieldsToAdd); //shouldn't be any valid fields to be added.
+
+			Assert.IsTrue(fieldsToAdd.Any(i => i.Name.Contains(nameof(TestClass.TestCollectionProp))));
+		}
+
 		public class EmptyType { }
 	}
 }
